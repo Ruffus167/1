@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#193875" />
+    <meta
+      name="description"
+      content="A colorful collection of apps for your Hoilday space."
+    />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <title>Hoilday — your apps</title>
+    <script id="appManifest" type="application/json">
+      {
+        "name": "Hoilday",
+        "short_name": "Hoilday",
+        "description": "A colorful collection of apps for your Hoilday space.",
+        "start_url": "./",
+        "scope": "./",
+        "display": "standalone",
+        "background_color": "#193875",
+        "theme_color": "#193875",
+        "icons": [
+          {
+            "src": "./icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+          }
+        ]
+      }
+    </script>
+    <link rel="stylesheet" href="./app.css" />
+  </head>
+  <body>
+    <aside class="global-announcement" id="globalAnnouncement" role="status" aria-live="polite" hidden>
+      <div class="global-announcement-copy">
+        <strong id="globalAnnouncementTitle"></strong>
+        <p id="globalAnnouncementMessage"></p>
+      </div>
+      <button id="dismissGlobalAnnouncement" type="button" aria-label="Dismiss announcement">×</button>
+    </aside>
+    <div class="app-shell" data-active-page="home">
+      <aside class="sidebar" aria-label="Main navigation">
+        <a class="brand" href="#" aria-label="Hoilday home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none">
+              <path d="M16 3.5 18.9 13l9.6 3-9.6 3L16 28.5 13.1 19l-9.6-3 9.6-3L16 3.5Z" fill="currentColor" />
+              <circle cx="25.5" cy="7" r="2" fill="currentColor" />
+            </svg>
+          </span>
+          <span>hoilday<span class="brand-period">.</span></span>
+        </a>
+
+        <div class="sidebar-section-label">WORKSPACE</div>
+        <nav class="side-nav">
+          <a class="side-link active" href="#calendarPage" data-page="calendar" aria-current="page">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3.5" y="5" width="17" height="16" rx="3" />
+              <path d="M7.5 3.5v3M16.5 3.5v3M3.5 9.5h17M8 13h3m-3 4h3m2-4h3m-3 4h3" />
+            </svg>
+            <span>Calendar</span>
+          </a>
+          <a class="side-link" id="chatNavLink" href="#chatPage" data-page="chat">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2 1-4.5a7.5 7.5 0 1 1 16-5Z" />
+              <path d="M8 11.5h.01M12 11.5h.01M16 11.5h.01" />
+            </svg>
+            <span>Chat</span>
+            <span class="chat-unread" id="chatUnreadBadge" aria-label="Unread chat messages" hidden>0</span>
+          </a>
+          <button class="side-link settings-link" id="openSettingsButton" type="button" aria-label="Settings" title="Settings">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z" />
+              <path d="m19.4 15 .1.1a1.8 1.8 0 1 1-2.5 2.5l-.1-.1a1.8 1.8 0 0 0-3 .9v.2a1.8 1.8 0 1 1-3.6 0v-.2a1.8 1.8 0 0 0-3-.9l-.1.1a1.8 1.8 0 1 1-2.5-2.5l.1-.1a1.8 1.8 0 0 0-.9-3h-.2a1.8 1.8 0 1 1 0-3.6h.2a1.8 1.8 0 0 0 .9-3l-.1-.1a1.8 1.8 0 1 1 2.5-2.5l.1.1a1.8 1.8 0 0 0 3-.9v-.2a1.8 1.8 0 1 1 3.6 0v.2a1.8 1.8 0 0 0 3 .9l.1-.1a1.8 1.8 0 1 1 2.5 2.5l-.1.1a1.8 1.8 0 0 0 .9 3h.2a1.8 1.8 0 1 1 0 3.6h-.2a1.8 1.8 0 0 0-.9 3Z" />
+            </svg>
+            <span>Settings</span>
+          </button>
+          <a class="side-link" href="#seasonalPage" data-page="seasonal">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2.8v18.4M4 7.4l16 9.2M4 16.6l16-9.2M9.3 4.3 12 6l2.7-1.7M9.3 19.7 12 18l2.7 1.7M4.6 10.1 7.5 10 8 7.2M19.4 13.9l-2.9.1-.5 2.8M4.6 13.9l2.9.1.5 2.8M19.4 10.1l-2.9-.1-.5-2.8" />
+            </svg>
+            <span>Seasonal</span>
+          </a>
+          <a class="side-link" href="#profilePage" data-page="profile">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="8" r="3.5" />
+              <path d="M4.5 20a7.5 7.5 0 0 1 15 0" />
+            </svg>
+            <span>Profile</span>
+          </a>
+          <a class="side-link" href="#emojisPage" data-page="emojis">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3.5v17M4.6 7.75l14.8 8.5M4.6 16.25l14.8-8.5M9 5.2l3 1.7 3-1.7M9 18.8l3-1.7 3 1.7M4.8 10.1l3.3-.1.9-3.1M19.2 13.9l-3.3.1-.9 3.1M4.8 13.9l3.3.1.9 3.1M19.2 10.1l-3.3-.1-.9-3.1" />
+            </svg>
+            <span>Emojis</span>
+          </a>
+          <a class="side-link" id="reportNavLink" href="#reportPage" data-page="report">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 4.5h14v11H9l-4 4v-15Z" />
+              <path d="M8.5 8.5h7m-7 3h5" />
+            </svg>
+            <span>Report</span>
+          </a>
+          <a class="side-link" id="adminNavLink" href="#adminPage" data-page="admin" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3 19 6v5c0 4.7-2.9 8-7 10-4.1-2-7-5.3-7-10V6l7-3Z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+            <span>Admin panel</span>
+          </a>
+        </nav>
+
+        <button class="profile-link" id="openProfileButton" type="button" aria-label="Open profile">
+          <div class="sidebar-glow" aria-hidden="true"></div>
+          <div class="profile-avatar" id="sidebarAvatar" aria-hidden="true">?</div>
+          <div class="profile-copy">
+            <strong id="sidebarUsername">Not signed in</strong>
+            <span id="sidebarRank">Sign in to save rank</span>
+          </div>
+        </button>
+      </aside>
+
+      <section class="home-screen" id="homeScreen" aria-label="Hoilday home screen">
+        <div class="home-statusbar" aria-label="Device status">
+          <span id="homeClock">9:41</span>
+          <span class="home-status-icons" aria-hidden="true">●●● <span>Wi-Fi</span><span class="home-battery"></span></span>
+        </div>
+        <header class="home-welcome">
+          <h1>Hoilday</h1>
+          <p id="homeDate">Your space, all in one place</p>
+        </header>
+        <div class="home-content">
+          <nav class="home-app-grid" id="homeAppGrid" aria-label="Apps">
+            <button class="home-app" type="button" data-app-id="calendar" data-page="calendar" aria-label="Open Calendar">
+              <span class="home-app-icon home-app-calendar" aria-hidden="true">🗓️</span><span class="home-app-label">Calendar</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="chat" data-page="chat" aria-label="Open Messages">
+              <span class="home-app-icon home-app-messages" aria-hidden="true">💬<span class="home-unread-badge" id="homeChatUnreadBadge" hidden>0</span></span><span class="home-app-label">Messages</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="notifications" data-page="notifications" aria-label="Open Notifications">
+              <span class="home-app-icon home-app-notifications" aria-hidden="true">🔔</span><span class="home-app-label">Notifications</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="settings" data-open-settings aria-label="Open Settings">
+              <span class="home-app-icon home-app-settings" aria-hidden="true">⚙️</span><span class="home-app-label">Settings</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="browser-appearance" data-page="browser-appearance" aria-label="Open Browser appearance">
+              <span class="home-app-icon home-app-appearance" aria-hidden="true">🎨</span><span class="home-app-label">Browser appearance</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="profile" data-page="profile" aria-label="Open Profile">
+              <span class="home-app-icon home-app-profile" aria-hidden="true"><span class="home-profile-avatar" id="homeProfileAvatar"><span>?</span></span></span><span class="home-app-label">Profile</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="trading" data-page="trading" aria-label="Open Gifts and trades">
+              <span class="home-app-icon home-app-trading" aria-hidden="true">🎁</span><span class="home-app-label">Gifts &amp; trades</span>
+            </button>
+            <button class="home-app" id="homeAdminApp" type="button" data-app-id="admin" data-page="admin" aria-label="Open Admin panel" hidden>
+              <span class="home-app-icon home-app-admin" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 4.7-2.9 8-7 10-4.1-2-7-5.3-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span><span class="home-app-label">Admin panel</span>
+            </button>
+            <button class="home-app" id="homeReportApp" type="button" data-app-id="report" data-page="report" aria-label="Open Reporting">
+              <span class="home-app-icon home-app-reporting" aria-hidden="true">🚩</span><span class="home-app-label">Reporting</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="seasonal" data-page="seasonal" aria-label="Open Fishing">
+              <span class="home-app-icon home-app-fishing" aria-hidden="true">🎣</span><span class="home-app-label">Fishing</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="emojis" data-page="emojis" aria-label="Open Emoji fishing">
+              <span class="home-app-icon home-app-emoji" aria-hidden="true">🐟</span><span class="home-app-label">Emoji fishing</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="turkey-fishing" data-page="turkey-fishing" aria-label="Open Turkey fishing">
+              <span class="home-app-icon home-app-turkey" aria-hidden="true">🦃</span><span class="home-app-label">Turkey fishing</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="thanksgiving-feast" data-page="thanksgiving-feast" aria-label="Open Thanksgiving Feast" hidden>
+              <span class="home-app-icon home-app-thanksgiving" aria-hidden="true">🍽️</span><span class="home-app-label">Thanksgiving Feast</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="christmas" data-page="christmas" aria-label="Open Christmas">
+              <span class="home-app-icon home-app-christmas" aria-hidden="true">🎄</span><span class="home-app-label">Christmas</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="topps" data-page="topps" data-app-url="./topps.html" aria-label="Open Topps">
+              <span class="home-app-icon home-app-topps" aria-hidden="true">TOPPS</span><span class="home-app-label">Topps</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="advent-calendar" data-page="advent-calendar" data-app-url="./christmas.html?app=advent" aria-label="Open Advent Calendar" hidden>
+              <span class="home-app-icon home-app-advent" aria-hidden="true">📅</span><span class="home-app-label">Advent Calendar</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="holiday-fishing" data-page="holiday-fishing" data-app-url="./christmas.html?app=fishing" aria-label="Open Holiday fishing" hidden>
+              <span class="home-app-icon home-app-holiday-fishing" aria-hidden="true">🎣</span><span class="home-app-label">Holiday fishing</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="holiday-shop" data-page="holiday-shop" data-app-url="./christmas.html?app=shop" aria-label="Open Holiday shop" hidden>
+              <span class="home-app-icon home-app-holiday-shop" aria-hidden="true">🛍️</span><span class="home-app-label">Holiday shop</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="text-color-fishing" data-page="text-color-fishing" data-app-url="./christmas.html?app=colors" aria-label="Open Text Color Fishing" hidden>
+              <span class="home-app-icon home-app-text-colors" aria-hidden="true">🎨</span><span class="home-app-label">Text Color Fishing</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="christmas-tree" data-page="christmas-tree" data-app-url="./christmas.html?app=tree" aria-label="Open Christmas Tree" hidden>
+              <span class="home-app-icon home-app-tree" aria-hidden="true">🌲</span><span class="home-app-label">Christmas Tree</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="export" data-page="export" aria-label="Open Export and import">
+              <span class="home-app-icon home-app-export" aria-hidden="true">📦</span><span class="home-app-label">Export / import</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="updates" data-page="updates" aria-label="Open Updates">
+              <span class="home-app-icon home-app-updates" aria-hidden="true">🔄</span><span class="home-app-label">Updates</span>
+            </button>
+          </nav>
+          <div class="home-page-dots" id="homePageDots" aria-label="Home screen pages"></div>
+        </div>
+      </section>
+
+      <main class="main-content">
+        <header class="topbar" id="appTopbar" hidden>
+          <div class="breadcrumb">
+            <button class="home-button" id="homeButton" type="button" aria-label="Return to home screen" title="Home">⌂</button>
+            <span>DAYGLOW</span><span class="breadcrumb-slash">/</span><strong id="breadcrumbTitle">Calendar</strong>
+          </div>
+          <div class="topbar-right">
+            <span class="local-save"><span class="save-dot"></span><span id="saveStatusText">Saved on this device</span></span>
+            <button class="account-button" id="accountButton" type="button">Sign in</button>
+            <button class="account-button account-create-button" id="createAccountButton" type="button">Create account</button>
+            <button class="app-close-button" id="appCloseButton" type="button" aria-label="Close app and return home" title="Close app">×</button>
+          </div>
+        </header>
+
+        <aside class="update-notice" id="updateNotice" aria-labelledby="updateNoticeTitle" hidden>
+          <div class="update-notice-copy">
+            <p class="update-notice-label" id="updateNoticeLabel">NEW IN DAYGLOW</p>
+            <h2 class="update-notice-title" id="updateNoticeTitle"></h2>
+            <p class="update-notice-description" id="updateNoticeDescription"></p>
+          </div>
+          <div class="update-notice-actions">
+            <button class="update-refresh-button" id="updateRefreshButton" type="button">Refresh now</button>
+            <button id="updateDismissButton" type="button">Got it</button>
+          </div>
+        </aside>
+
+        <section class="page-content app-page" id="calendarPage" hidden>
+          <section class="welcome-row">
+            <div>
+              <p class="eyebrow"><span class="eyebrow-star">✳</span> A LITTLE SPACE FOR WHAT MATTERS</p>
+              <h1>Your time,<br class="mobile-break" /> in full color<span class="heading-period">.</span></h1>
+              <p class="welcome-subtitle">Make room for the things you’re looking forward to.</p>
+            </div>
+            <button class="primary-button" id="addEventButton" type="button">
+              <span class="button-plus" aria-hidden="true">+</span>
+              <span>Add an event</span>
+            </button>
+          </section>
+
+          <div class="community-tabs" id="communityTabs" role="tablist" aria-label="Public calendar views" hidden>
+            <button id="communityCalendarTab" type="button" role="tab" aria-selected="true" aria-controls="calendar">Calendar</button>
+            <button id="communityOnlineTab" type="button" role="tab" aria-selected="false" aria-controls="communityOnlineView">Who's online</button>
+          </div>
+          <section class="calendar-layout" id="calendar" aria-label="Calendar">
+            <div class="calendar-card">
+              <div class="calendar-toolbar">
+                <div class="calendar-toolbar-main">
+                  <div class="month-heading">
+                    <span class="month-sparkle" aria-hidden="true">✳</span>
+                    <h2 id="monthTitle"></h2>
+                  </div>
+                  <div class="calendar-scope" role="group" aria-label="Calendar">
+                    <button id="personalCalendarButton" type="button" aria-pressed="true">My calendar</button>
+                    <button id="communityCalendarButton" type="button" aria-pressed="false">Public calendar</button>
+                  </div>
+                  <div class="calendar-filters" aria-label="Search and filter events">
+                    <label class="calendar-search">
+                      <span class="sr-only">Search events</span>
+                      <input id="eventSearchInput" type="search" placeholder="Search plans" aria-label="Search plans" />
+                    </label>
+                    <label class="calendar-select">
+                      <span class="sr-only">Filter by category</span>
+                      <select id="eventCategoryFilter" aria-label="Filter by category">
+                        <option value="all">All colors</option>
+                        <option value="violet">Dreamy lilac</option>
+                        <option value="coral">Peachy keen</option>
+                        <option value="mint">Mint condition</option>
+                        <option value="blue">Blue skies</option>
+                        <option value="yellow">Golden hour</option>
+                        <option value="pink">Pink pop</option>
+                        <option value="orange">Tangerine</option>
+                        <option value="teal">Sea glass</option>
+                        <option value="indigo">Periwinkle</option>
+                      </select>
+                    </label>
+                  </div>
+                </div>
+                <div class="calendar-actions">
+                  <button class="today-button" id="todayButton" type="button">Today</button>
+                  <div class="month-controls" aria-label="Change month">
+                    <button class="icon-button" id="previousMonth" type="button" aria-label="Previous month">
+                      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m12 4-6 6 6 6" /></svg>
+                    </button>
+                    <button class="icon-button" id="nextMonth" type="button" aria-label="Next month">
+                      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 4 6 6-6 6" /></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="weekdays" aria-hidden="true">
+                <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+              </div>
+              <div class="calendar-grid" id="calendarGrid" role="grid" aria-label="Days of the month"></div>
+
+              <div class="calendar-legend">
+                <span><i class="legend-dot legend-today"></i> Today</span>
+                <span><i class="legend-dot legend-event"></i> Has an event</span>
+                <span class="legend-hint">Pick a day to see what’s happening</span>
+              </div>
+              <p class="page-status" id="calendarStatus" role="status" aria-live="polite"></p>
+            </div>
+
+            <aside class="day-panel" id="day-panel" aria-label="Events">
+              <div class="day-panel-heading">
+                <div>
+                  <p class="eyebrow" id="selectedDayLabel">YOUR DAY</p>
+                  <h2 id="selectedDateTitle"></h2>
+                </div>
+                <span class="day-sun" aria-hidden="true">✳</span>
+              </div>
+              <div class="day-events" id="dayEvents"></div>
+              <button class="add-day-button" id="addDayEventButton" type="button">
+                <span aria-hidden="true">+</span> Add to this day
+              </button>
+
+              <div class="panel-divider"></div>
+
+              <div class="upcoming-heading">
+                <div>
+                  <p class="eyebrow">ON THE HORIZON</p>
+                  <h3>Coming up</h3>
+                </div>
+                <span class="upcoming-count" id="upcomingCount">0</span>
+              </div>
+              <div class="upcoming-list" id="upcomingList"></div>
+            </aside>
+          </section>
+
+          <section class="community-online-view" id="communityOnlineView" aria-labelledby="communityOnlineHeading" hidden>
+            <h2 id="communityOnlineHeading">Who's online</h2>
+            <p>See which other signed-in Hoilday members are around.</p>
+            <div class="online-panel">
+              <h3 class="online-heading">Other members</h3>
+              <div class="online-list" id="onlineList"><p class="online-empty">Sign in to see who's online.</p></div>
+            </div>
+          </section>
+
+          <section class="month-summary" aria-label="Calendar summary">
+            <div class="summary-card summary-violet">
+              <span class="summary-icon" aria-hidden="true">✳</span>
+              <div><span class="summary-label">PLANS THIS MONTH</span><strong id="monthEventCount">0</strong></div>
+              <span class="summary-caption">little things to look forward to</span>
+            </div>
+            <div class="summary-card summary-coral">
+              <span class="summary-icon" aria-hidden="true">☼</span>
+              <div><span class="summary-label">ON YOUR SELECTED DAY</span><strong id="dayEventCount">0</strong></div>
+              <span class="summary-caption">make today your own</span>
+            </div>
+            <p class="privacy-note"><span aria-hidden="true">♡</span> <span id="privacyNoteText">Your personal calendar is saved privately in this browser.</span></p>
+          </section>
+
+          <p class="sr-only" id="liveMessage" role="status" aria-live="polite"></p>
+          <p class="sr-only" id="errorMessage" role="alert"></p>
+        </section>
+
+        <section class="page-content app-page" id="chatPage" hidden>
+          <header class="seasonal-heading">
+            <p class="eyebrow"><span class="eyebrow-star">✳</span> THE DAYGLOW LOUNGE</p>
+            <h1>Messages<span class="heading-period">.</span></h1>
+            <p class="welcome-subtitle">Say hello and catch up with everyone in the Hoilday community.</p>
+          </header>
+          <div class="chat-layout">
+            <section class="chat-card" aria-label="Community chat">
+              <header class="chat-header">
+                <div>
+                  <h2>Community messages</h2>
+                  <p>Messages are shared with signed-in Hoilday members.</p>
+                </div>
+                <div class="chat-header-actions">
+                  <button class="chat-notification-button" id="chatNotificationButton" type="button" hidden>Enable notifications</button>
+                  <button class="chat-clear-button" id="chatClearButton" type="button" hidden>Clear history</button>
+                  <span class="chat-connection" id="chatConnectionStatus" role="status" aria-live="polite">Ready when you are</span>
+                </div>
+              </header>
+              <div class="community-tabs" role="tablist" aria-label="Chat views">
+                <button id="chatTab" type="button" role="tab" aria-selected="true" aria-controls="chatMessagesPanel">Chat</button>
+                <button id="chatOnlineTab" type="button" role="tab" aria-selected="false" aria-controls="chatOnlinePanel">Who's online</button>
+              </div>
+              <div class="chat-messages-panel" id="chatMessagesPanel" role="tabpanel" aria-labelledby="chatTab">
+                <ol class="chat-messages" id="chatMessages" aria-label="Chat messages" aria-live="polite" aria-relevant="additions text" hidden></ol>
+                <div class="chat-signin-prompt" id="chatSignInPrompt">
+                  <span class="chat-signin-art" aria-hidden="true">✦</span>
+                  <h2>Join the conversation</h2>
+                  <p>Sign in to see the lounge and send messages to other Hoilday members.</p>
+                  <button class="primary-button" id="chatSignInButton" type="button">Sign in to chat <span aria-hidden="true">↗</span></button>
+                </div>
+                <form class="chat-compose" id="chatForm" hidden>
+                  <label class="sr-only" for="chatMessageInput">Your message</label>
+                  <textarea id="chatMessageInput" name="message" rows="2" maxlength="500" placeholder="Write a message… (Shift + Enter for a new line)" required></textarea>
+                  <button class="primary-button" id="chatSendButton" type="submit">Send <span aria-hidden="true">↗</span></button>
+                </form>
+              </div>
+              <section class="chat-online-panel" id="chatOnlinePanel" role="tabpanel" aria-labelledby="chatOnlineTab" hidden>
+                <h3>Who's online</h3>
+                <p id="chatOnlinePrompt">Sign in to see which other members are online.</p>
+                <div class="online-panel">
+                  <div class="online-list" id="chatOnlineList"><p class="online-empty">Sign in to see who's online.</p></div>
+                </div>
+              </section>
+            </section>
+            <aside class="chat-note-card">
+              <span class="chat-note-icon" aria-hidden="true">♡</span>
+              <h2>Keep it kind</h2>
+              <p>This is a shared space for the Hoilday community. Be thoughtful, keep personal details private, and remember that messages are visible to all signed-in members.</p>
+            </aside>
+          </div>
+          <p class="page-status" id="chatStatus" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="page-content app-page" id="notificationsPage" hidden>
+          <header class="seasonal-heading">
+            <p class="eyebrow"><span class="eyebrow-star">✳</span> A LITTLE NUDGE, RIGHT ON TIME</p>
+            <h1>Notifications<span class="heading-period">.</span></h1>
+            <p class="welcome-subtitle">Choose what reaches you and preview how reminders appear.</p>
+          </header>
+          <form id="notificationForm">
+            <div class="notification-layout">
+              <section class="settings-card notification-card-wide">
+                <div class="notification-hero">
+                  <div class="notification-hero-copy">
+                    <h2>Delivery</h2>
+                    <p>Browser notifications work while Hoilday is open. Background delivery needs a push service.</p>
+                    <span class="notification-permission" id="notificationPermissionStatus" data-state="default">Checking permission…</span>
+                  </div>
+                  <span class="notification-hero-icon" aria-hidden="true">🔔</span>
+                </div>
+                <div class="notification-options">
+                  <label class="setting-toggle"><input id="notificationsEnabled" type="checkbox" /><span>Event reminders <small>Show a notification for upcoming calendar events.</small></span></label>
+                  <div class="reminder-options">
+                    <label class="setting-toggle"><input id="reminderFiveDays" type="checkbox" /><span>5 days before <small>3:00 AM</small></span></label>
+                    <label class="setting-toggle"><input id="reminderOneDay" type="checkbox" /><span>1 day before <small>3:00 AM</small></span></label>
+                    <label class="setting-toggle"><input id="reminderFiveHours" type="checkbox" /><span>5 hours before <small>Timed events only</small></span></label>
+                    <label class="setting-toggle"><input id="reminderOneHour" type="checkbox" /><span>1 hour before <small>Timed events only</small></span></label>
+                  </div>
+                  <label class="setting-toggle"><input id="weeklySummaryEnabled" type="checkbox" /><span>Daily next-week update <small>4:30 PM local time · summarizes the next 7 days</small></span></label>
+                </div>
+              </section>
+              <section class="settings-card">
+                <h2>Sound</h2>
+                <label class="setting-toggle"><input id="notificationSound" type="checkbox" /><span>Play a soft chime with reminders <small>Plays only while Hoilday is open.</small></span></label>
+                <label class="settings-range" for="soundVolume">
+                  <span class="settings-range-heading">Chime volume <output id="soundVolumeValue" for="soundVolume">45%</output></span>
+                  <input id="soundVolume" type="range" min="0" max="100" step="5" value="45" />
+                </label>
+                <div class="settings-inline-actions">
+                  <button class="primary-button save-button" id="previewSoundButton" type="button">Preview chime</button>
+                </div>
+                <p class="settings-note" id="audioStatus" role="status" aria-live="polite"></p>
+                <p class="settings-note">Browsers may pause audio until you interact with the page.</p>
+              </section>
+              <section class="settings-card">
+                <h2>Test a notification</h2>
+                <p>See the in-app banner and check that your browser can deliver an operating-system notification.</p>
+                <div class="settings-inline-actions">
+                  <button class="primary-button save-button" id="previewBannerButton" type="button">Preview banner</button>
+                  <button class="primary-button save-button" id="testNotificationButton" type="button">Send test notification</button>
+                </div>
+                <p class="settings-note" id="testNotificationStatus" role="status" aria-live="polite"></p>
+              </section>
+              <section class="settings-card">
+                <h2>Email &amp; delivery</h2>
+                <label class="field-label" for="reminderEmail">Email address <span class="optional-label">optional</span></label>
+                <input id="reminderEmail" name="email" type="email" maxlength="254" autocomplete="email" placeholder="you@example.com" />
+                <p class="settings-warning">Automatic email isn't available in this browser-only app. You can create an Outlook draft and send it yourself.</p>
+                <div class="settings-inline-actions">
+                  <button class="primary-button save-button" id="emailSummaryButton" type="button">Create email draft</button>
+                </div>
+                <p class="settings-note" id="emailSummaryStatus" role="status" aria-live="polite"></p>
+              </section>
+            </div>
+            <div class="notification-form-actions">
+              <button class="primary-button" type="submit">Save notification settings <span aria-hidden="true">↗</span></button>
+              <p class="page-status" id="notificationStatus" role="status" aria-live="polite"></p>
+            </div>
+          </form>
+        </section>
+
+        <section class="app-page seasonal-page" id="seasonalPage" hidden>
+          <div class="snowflakes" aria-hidden="true">
+            <span>❄</span><span>❄</span><span>❄</span><span>❄</span>
+            <span>❄</span><span>❄</span><span>❄</span><span>❄</span>
+          </div>
+          <div class="seasonal-inner">
+            <header class="seasonal-heading">
+              <p class="eyebrow"><span class="eyebrow-star">✳</span> THE FISHING POND</p>
+              <h1>Fishing<span class="heading-period">.</span></h1>
+              <p class="welcome-subtitle">Cast a line, collect seasonal fish, and climb the winter ranks.</p>
+            </header>
+            <div class="seasonal-tabs" role="tablist" aria-label="Seasonal activities">
+              <button class="seasonal-tab" id="fishingTab" type="button" role="tab" aria-selected="true" aria-controls="fishingPanel">Fishing</button>
+              <button class="seasonal-tab" id="ranksTab" type="button" role="tab" aria-selected="false" aria-controls="ranksPanel">Ranks</button>
+              <button class="seasonal-tab" id="questsTab" type="button" role="tab" aria-selected="false" aria-controls="questsPanel">Side quests</button>
+            </div>
+            <section class="seasonal-card fishing-card" id="fishingPanel" role="tabpanel" aria-labelledby="fishingTab">
+              <div class="fishing-art" aria-hidden="true">🎣</div>
+              <h2>Winter fishing</h2>
+              <p>Every cast adds a rank to your collection. Pick the one you want to show from your profile.</p>
+              <button class="primary-button catch-button" id="catchFishButton" type="button">Cast your line <span aria-hidden="true">↗</span></button>
+              <p class="catch-status" id="catchStatus" role="status" aria-live="polite">Sign in to start fishing and save your rank.</p>
+              <div class="rank-list" aria-label="Fishing ranks and catch odds">
+                <div class="rank-chip rank-snow"><strong>Snow</strong><small>61.1%</small><span class="rank-rarity rarity-common">Common</span></div>
+                <div class="rank-chip rank-present"><strong>Present</strong><small>19.5%</small><span class="rank-rarity rarity-uncommon">Uncommon</span></div>
+                <div class="rank-chip rank-peppermint"><strong>Peppermint</strong><small>9.2%</small><span class="rank-rarity rarity-rare">Rare</span></div>
+                <div class="rank-chip rank-fall" data-seasonal-rank="fall"><strong>Fall</strong><small>5% chance</small><span class="rank-rarity rarity-rare">Rare</span></div>
+                <div class="rank-chip rank-santa"><strong>Santa</strong><small>2.9%</small><span class="rank-rarity rarity-epic">Epic</span></div>
+                <div class="rank-chip rank-turkey" data-seasonal-rank="turkey"><strong>Turkey</strong><small>2% chance</small><span class="rank-rarity rarity-epic">Epic</span></div>
+                <div class="rank-chip rank-cameron"><strong>Cameron</strong><small>0.2% chance</small><span class="rank-rarity rarity-legendary">Legendary</span></div>
+                <div class="rank-chip rank-holiday"><strong>Holiday</strong><small>0.1% chance</small><span class="rank-rarity rarity-legendary">Legendary</span></div>
+                <div class="rank-chip rank-snowball"><strong>Snowball</strong><small>0.01% chance</small><span class="rank-rarity rarity-legendary">Legendary</span></div>
+              </div>
+            </section>
+            <section class="seasonal-card" id="ranksPanel" role="tabpanel" aria-labelledby="ranksTab" hidden>
+              <h2>Rank collection</h2>
+              <p class="welcome-subtitle">Collect fishing and quest ranks, then choose which one to show on your profile.</p>
+              <div class="rank-list" aria-label="All available ranks">
+                <div class="rank-chip rank-snow"><strong>Snow</strong><small>Fishing · 61.1%</small><span class="rank-rarity rarity-common">Common</span></div>
+                <div class="rank-chip rank-present"><strong>Present</strong><small>Fishing · 19.5%</small><span class="rank-rarity rarity-uncommon">Uncommon</span></div>
+                <div class="rank-chip rank-peppermint"><strong>Peppermint</strong><small>Fishing · 9.2%</small><span class="rank-rarity rarity-rare">Rare</span></div>
+                <div class="rank-chip rank-fall" data-seasonal-rank="fall"><strong>Fall</strong><small>Fishing · 5%</small><span class="rank-rarity rarity-rare">Rare</span></div>
+                <div class="rank-chip rank-santa"><strong>Santa</strong><small>Fishing · 2.9%</small><span class="rank-rarity rarity-epic">Epic</span></div>
+                <div class="rank-chip rank-turkey" data-seasonal-rank="turkey"><strong>Turkey</strong><small>Fishing · 2%</small><span class="rank-rarity rarity-epic">Epic</span></div>
+                <div class="rank-chip rank-cameron"><strong>Cameron</strong><small>Fishing · 0.2%</small><span class="rank-rarity rarity-legendary">Legendary</span></div>
+                <div class="rank-chip rank-holiday"><strong>Holiday</strong><small>Fishing · 0.1%</small><span class="rank-rarity rarity-legendary">Legendary</span></div>
+                <div class="rank-chip rank-snowball"><strong>Snowball</strong><small>Fishing · 0.01%</small><span class="rank-rarity rarity-legendary">Legendary</span></div>
+                <div class="rank-chip rank-harvest"><strong>Harvest</strong><small>Harvest side quest</small><span class="rank-rarity rarity-uncommon">Uncommon</span></div>
+                <div class="rank-chip rank-drumstick"><strong>Drumstick</strong><small>Drumstick side quest</small><span class="rank-rarity rarity-rare">Rare</span></div>
+              </div>
+            </section>
+            <section class="seasonal-card" id="questsPanel" role="tabpanel" aria-labelledby="questsTab" hidden>
+              <h2>Side quests</h2>
+              <p class="welcome-subtitle" id="questIntro">Take a break from fishing and earn two special seasonal ranks.</p>
+              <div class="quest-grid">
+                <article class="quest-card">
+                  <h3 id="harvestQuestTitle">Harvest scavenger hunt</h3>
+                  <p id="harvestQuestDescription">Find the hidden golden leaf. You get three guesses per hunt.</p>
+                  <div class="quest-reward"><span>Reward</span><strong class="rank-harvest" id="harvestRewardName">Harvest</strong><small class="rank-rarity rarity-uncommon" id="harvestRewardRarity">Uncommon</small></div>
+                  <button class="seasonal-tab" id="harvestStartButton" type="button">Start the hunt</button>
+                  <div class="quest-game" id="harvestGame" hidden>
+                    <p id="harvestClue">Which find is hiding the golden leaf?</p>
+                    <div class="harvest-choices" id="harvestChoices">
+                      <button class="harvest-choice" type="button" data-harvest-choice="0" aria-label="Search the fallen leaves">🍂</button>
+                      <button class="harvest-choice" type="button" data-harvest-choice="1" aria-label="Search the mushrooms">🍄</button>
+                      <button class="harvest-choice" type="button" data-harvest-choice="2" aria-label="Search the pumpkin patch">🎃</button>
+                      <button class="harvest-choice" type="button" data-harvest-choice="3" aria-label="Search the cornfield">🌽</button>
+                      <button class="harvest-choice" type="button" data-harvest-choice="4" aria-label="Search the apple basket">🍎</button>
+                      <button class="harvest-choice" type="button" data-harvest-choice="5" aria-label="Search the pie table">🥧</button>
+                    </div>
+                  </div>
+                  <p class="quest-status" id="harvestQuestStatus" role="status" aria-live="polite">Sign in to play and unlock Harvest.</p>
+                </article>
+                <article class="quest-card">
+                  <h3 id="drumstickQuestTitle">Drumstick dash</h3>
+                  <p id="drumstickQuestDescription">Wait for the turkey to appear, then tap as quickly as you can.</p>
+                  <div class="quest-reward"><span>Reward</span><strong class="rank-drumstick" id="drumstickRewardName">Drumstick</strong><small class="rank-rarity rarity-rare" id="drumstickRewardRarity">Rare</small></div>
+                  <button class="seasonal-tab" id="drumstickStartButton" type="button">Start the dash</button>
+                  <div class="reaction-game" id="drumstickGame" hidden>
+                    <span class="reaction-signal" id="drumstickSignal" aria-hidden="true" hidden>🦃</span>
+                    <button class="reaction-button" id="drumstickReactButton" type="button" disabled hidden>Tap the turkey!</button>
+                  </div>
+                  <p class="quest-status" id="drumstickQuestStatus" role="status" aria-live="polite">Sign in to play and unlock Drumstick.</p>
+                </article>
+              </div>
+              <p class="page-status" id="questsStatus" role="status" aria-live="polite"></p>
+            </section>
+          </div>
+        </section>
+
+        <section class="page-content app-page" id="profilePage" hidden>
+          <header class="seasonal-heading">
+            <p class="eyebrow"><span class="eyebrow-star">✳</span> YOUR DAYGLOW PROFILE</p>
+            <h1>Your winter story<span class="heading-period">.</span></h1>
+            <p class="welcome-subtitle">Manage your rank, collectibles, and the text color shown with your username.</p>
+          </header>
+          <section class="seasonal-card profile-card" aria-label="Player profile">
+            <div class="profile-heading">
+              <div class="profile-avatar" id="profileAvatar" aria-hidden="true">?</div>
+              <div><h2 id="profileUsername">Not signed in</h2><p id="profileCaption">Sign in to create your profile.</p></div>
+            </div>
+            <div class="profile-upload-controls">
+              <label class="account-button" id="profileAvatarUploadLabel" for="profileAvatarInput">Upload profile picture</label>
+              <input id="profileAvatarInput" type="file" accept="image/jpeg,image/png,image/webp" />
+              <button class="account-button" id="removeProfileAvatarButton" type="button" hidden>Remove picture</button>
+              <p class="profile-upload-help">JPEG, PNG, or WebP; cropped to a square and saved up to 256 KB.</p>
+            </div>
+            <p class="page-status" id="profileAvatarStatus" role="status" aria-live="polite"></p>
+            <div class="profile-stats">
+              <div class="profile-stat"><span>EQUIPPED RANK</span><strong id="profileRank">—</strong></div>
+              <div class="profile-stat"><span>FISH CAUGHT</span><strong id="profileFishCount">0</strong></div>
+            </div>
+            <section class="profile-rank-collection" aria-labelledby="profileRanksHeading">
+              <h3 id="profileRanksHeading">Your unlocked ranks</h3>
+              <p class="profile-rank-empty" id="profileRankEmpty">Sign in to see and choose your unlocked ranks.</p>
+              <div class="profile-rank-list" id="profileRankList"></div>
+              <p class="page-status" id="profileRankStatus" role="status" aria-live="polite"></p>
+            </section>
+            <section class="profile-rank-collection" aria-labelledby="profileEmojisHeading">
+              <h3 id="profileEmojisHeading">Your unlocked emojis</h3>
+              <p class="profile-rank-empty" id="profileEmojiEmpty">Sign in to see and choose your unlocked emojis.</p>
+              <div class="profile-rank-list" id="profileEmojiList"></div>
+              <p class="page-status" id="profileEmojiStatus" role="status" aria-live="polite"></p>
+            </section>
+            <section class="profile-rank-collection" aria-labelledby="profileRingsHeading">
+              <h3 id="profileRingsHeading">Your profile rings</h3>
+              <p class="profile-rank-empty" id="profileRingEmpty">Sign in to see and equip your unlocked rings.</p>
+              <div class="profile-rank-list" id="profileRingList"></div>
+              <p class="page-status" id="profileRingStatus" role="status" aria-live="polite"></p>
+            </section>
+            <section class="profile-rank-collection" aria-labelledby="profileTextColorsHeading">
+              <h3 id="profileTextColorsHeading">Your text colors</h3>
+              <p class="profile-rank-empty" id="profileTextColorEmpty">Sign in to see and equip your unlocked text colors.</p>
+              <div class="profile-rank-list" id="profileTextColorList"></div>
+              <p class="page-status" id="profileTextColorStatus" role="status" aria-live="polite"></p>
+            </section>
+            <div>
+              <p class="eyebrow">YOUR NEXT CAST</p>
+              <button class="primary-button" id="profileFishButton" type="button">Go fishing <span aria-hidden="true">↗</span></button>
+            </div>
+          </section>
+        </section>
+
+        <section class="page-content app-page" id="tradingPage" hidden>
+          <header class="seasonal-heading">
+            <p class="eyebrow"><span class="eyebrow-star">✳</span> SHARE YOUR COLLECTION</p>
+            <h1>Gifts &amp; trades<span class="heading-period">.</span></h1>
+            <p class="welcome-subtitle">Gift an unlocked collectible or trade one for something you want.</p>
+          </header>
+          <div class="trading-layout">
+            <section class="trading-card" aria-labelledby="giftHeading">
+              <h2 id="giftHeading">Send a gift</h2>
+              <p>Gifts move an item from your collection to another member. You cannot gift your last rank.</p>
+              <form class="trade-form" id="giftForm">
+                <label for="giftRecipient">Recipient username
+                  <select id="giftRecipient" name="recipient" required>
+                    <option value="">Choose a member</option>
+                  </select>
+                </label>
+                <label for="giftType">Collectible type
+                  <select id="giftType" name="item_type" required>
+                    <option value="rank">Rank</option><option value="emoji">Emoji</option><option value="ring">Ring</option>
+                  </select>
+                </label>
+                <label for="giftItem">Your item
+                  <select id="giftItem" name="item_id" required></select>
+                </label>
+                <button class="primary-button" id="giftSubmitButton" type="submit">Send gift <span aria-hidden="true">↗</span></button>
+                <p class="trading-status" id="giftStatus" role="status" aria-live="polite"></p>
+              </form>
+            </section>
+            <section class="trading-card" aria-labelledby="tradeHeading">
+              <h2 id="tradeHeading">Offer a trade</h2>
+              <p>Choose items from each collection. Members can accept, decline, or cancel offers. Bots rarely accept, and only when your offer is more valuable.</p>
+              <form class="trade-form" id="tradeForm">
+                <label for="tradeRecipient">Member username
+                  <select id="tradeRecipient" name="recipient" required>
+                    <option value="">Choose a member</option>
+                  </select>
+                </label>
+                <label for="tradeOfferedType">You offer
+                  <select id="tradeOfferedType" name="offered_type" required>
+                    <option value="rank">Rank</option><option value="emoji">Emoji</option><option value="ring">Ring</option>
+                  </select>
+                </label>
+                <label for="tradeOfferedItem">Your item
+                  <select id="tradeOfferedItem" name="offered_item_id" required></select>
+                </label>
+                <label for="tradeRequestedType">You request
+                  <select id="tradeRequestedType" name="requested_type" required>
+                    <option value="rank">Rank</option><option value="emoji">Emoji</option><option value="ring">Ring</option>
+                  </select>
+                </label>
+                <label for="tradeRequestedItem">Requested collectible
+                  <select id="tradeRequestedItem" name="requested_item_id" required></select>
+                </label>
+                <button class="primary-button" id="tradeSubmitButton" type="submit">Send trade offer <span aria-hidden="true">↗</span></button>
+                <p class="trading-status" id="tradeStatus" role="status" aria-live="polite"></p>
+              </form>
+            </section>
+            <section class="trading-card" style="grid-column: 1 / -1" aria-labelledby="offersHeading">
+              <h2 id="offersHeading">Your trade offers</h2>
+              <p>Accepting a trade exchanges both items at once. If either item is no longer available, nothing will move.</p>
+              <p class="trading-status" id="tradingStatus" role="status" aria-live="polite"></p>
+              <p class="trading-empty" id="tradeOfferEmpty">Sign in to see trade offers.</p>
+              <div class="trade-offer-list" id="tradeOfferList"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="page-content app-page" id="emojisPage" hidden>
+          <header class="seasonal-heading">
+            <p class="eyebrow"><span class="eyebrow-star">✳</span> YOUR SEASONAL STYLE</p>
+            <h1>Emoji fishing<span class="heading-period">.</span></h1>
+            <p class="welcome-subtitle">Collect seasonal emojis and show one beside your name.</p>
+          </header>
+          <section class="seasonal-card emoji-collection-card" aria-label="Emoji collection">
+            <div class="emoji-page-heading">
+              <div>
+                <h2>Emoji collection</h2>
+                <p>Go emoji fishing for seasonal finds, or earn special emojis as you fish. Emoji fishing is separate from rank fishing.</p>
+              </div>
+              <div class="emoji-actions">
+                <button class="primary-button" id="emojiFishButton" type="button" disabled>Go emoji fishing <span aria-hidden="true">↗</span></button>
+                <button class="account-button" id="emojiSignInButton" type="button" hidden>Sign in</button>
+                <button class="account-button" id="clearEmojiButton" type="button" hidden>Clear equipped emoji</button>
+              </div>
+            </div>
+            <p class="emoji-fishing-status" id="emojiFishingStatus" role="status" aria-live="polite">Sign in to save your emoji collection.</p>
+            <div class="emoji-grid" id="emojiCollection"></div>
+            <p class="page-status" id="emojiStatus" role="status" aria-live="polite"></p>
+          </section>
+        </section>
+
+        <section class="app-page seasonal-page turkey-fishing-page" id="turkeyFishingPage" hidden>
+          <div class="seasonal-inner">
+            <header class="seasonal-heading">
+              <p class="eyebrow"><span class="eyebrow-star">✳</span> THE RING POND</p>
+              <h1 id="ringFishingTitle">Turkey fishing<span class="heading-period">.</span></h1>
+              <p class="welcome-subtitle">Catch a colored ring, then equip your favorite from Profile.</p>
+            </header>
+            <section class="seasonal-card fishing-card" id="ringFishingCard" aria-label="Turkey fishing">
+              <span class="fishing-art" aria-hidden="true">🦃</span>
+              <h2>Cast for a profile ring</h2>
+              <p>Each cast can unlock one ring. Duplicate catches are possible, but they will not unlock duplicates.</p>
+              <div class="emoji-actions">
+                <button class="primary-button catch-button" id="turkeyFishButton" type="button" disabled>Go Turkey fishing</button>
+                <button class="account-button" id="turkeySignInButton" type="button" hidden>Sign in</button>
+              </div>
+              <p class="ring-status" id="turkeyFishingStatus" role="status" aria-live="polite">Sign in to save your profile rings.</p>
+              <div class="ring-grid" id="ringCollection" aria-label="Profile rings and catch odds"></div>
+              <p class="page-status" id="turkeyCollectionStatus" role="status" aria-live="polite"></p>
+            </section>
+          </div>
+        </section>
+
+        <section class="page-content app-page" id="thanksgivingFeastPage" hidden>
+          <header class="seasonal-heading">
+            <p class="eyebrow"><span class="eyebrow-star">✳</span> A THANKSGIVING COOKING GAME</p>
+            <h1>Thanksgiving Feast<span class="heading-period">.</span></h1>
+            <p class="welcome-subtitle">Work through eight recipes, step by step, to prepare the whole Thanksgiving menu.</p>
+          </header>
+          <section class="admin-card feast-card" aria-label="Thanksgiving feast cooking game">
+            <div class="feast-intro">
+              <span class="feast-intro-icon" aria-hidden="true">🦃</span>
+              <div>
+                <h2>Make a feast together</h2>
+                <p>The app appears November 23–27. The kitchen unlocks at 4:00 PM Eastern today, November 23. Complete 24 prep, seasoning, and cooking steps across eight classic dishes; progress saves to your account.</p>
+              </div>
+            </div>
+            <div class="feast-countdown" id="thanksgivingFeastCountdown" hidden>
+              <span class="feast-countdown-label">The kitchen opens in</span>
+              <strong class="feast-countdown-timer" id="thanksgivingFeastCountdownTimer" role="timer" aria-live="off">--:--:--</strong>
+              <p class="feast-countdown-note">4:00 PM America/New_York · November 23, 2026</p>
+            </div>
+            <p class="feast-progress" id="thanksgivingFeastProgress">Loading your kitchen…</p>
+            <button class="account-button" id="thanksgivingSignInButton" type="button" hidden>Sign in to save your feast</button>
+            <div class="feast-dishes" id="thanksgivingDishes"></div>
+            <p class="feast-status" id="thanksgivingFeastStatus" role="status" aria-live="polite"></p>
+            <div class="feast-reward" id="thanksgivingFeastReward" hidden>
+              <p id="thanksgivingFeastRewardSummary"></p>
+              <button class="primary-button" id="thanksgivingEquipColorButton" type="button">Equip Thanksgiving text color</button>
+              <p class="feast-color-status" id="thanksgivingColorStatus" role="status" aria-live="polite"></p>
+            </div>
+          </section>
+        </section>
+
+        <section class="page-content app-page" id="reportPage" hidden>
+          <header class="seasonal-heading">
+            <p class="eyebrow"><span class="eyebrow-star">✳</span> SEND A PRIVATE MESSAGE</p>
+            <h1>Report to Rufus<span class="heading-period">.</span></h1>
+            <p class="welcome-subtitle">Let Rufus know about a problem or something that needs attention.</p>
+          </header>
+          <section class="admin-card" aria-labelledby="reportHeading">
+            <h2 id="reportHeading">File a report</h2>
+            <p>Reports are private and can only be read from Rufus’s Admin panel. Your account name is included.</p>
+            <p class="report-status" id="reportSignInNotice" role="status">Sign in to file a report.</p>
+            <button class="account-button" id="reportSignInButton" type="button">Sign in to report</button>
+            <form class="report-form" id="reportForm" hidden>
+              <label for="reportSubject">Subject
+                <input id="reportSubject" name="subject" minlength="3" maxlength="120" placeholder="What is this about?" required />
+              </label>
+              <label for="reportMessage">Details
+                <textarea id="reportMessage" name="message" minlength="10" maxlength="3000" placeholder="Describe what happened…" required></textarea>
+              </label>
+              <div class="admin-action-row">
+                <button class="primary-button" id="reportSubmitButton" type="submit">Send report</button>
+              </div>
+              <p class="report-status" id="reportStatus" role="status" aria-live="polite"></p>
+            </form>
+          </section>
+        </section>
+
+        <section class="page-content app-page" id="adminPage" hidden>
+          <header class="seasonal-heading">
+            <p class="eyebrow"><span class="eyebrow-star">✳</span> ACCOUNT MODERATION</p>
+            <h1>Admin panel<span class="heading-period">.</span></h1>
+            <p class="welcome-subtitle">Manage reports, online members and active bans.</p>
+          </header>
+          <div class="admin-tabs" role="tablist" aria-label="Admin panel sections">
+            <button id="adminMembersTab" type="button" role="tab" aria-selected="true" aria-controls="adminMembersPanel" data-admin-tab="members">Members</button>
+            <button id="adminAccountsTab" type="button" role="tab" aria-selected="false" aria-controls="adminAccountsPanel" data-admin-tab="accounts" tabindex="-1">Accounts</button>
+            <button id="adminToolsTab" type="button" role="tab" aria-selected="false" aria-controls="adminToolsPanel" data-admin-tab="tools" tabindex="-1">Admin tools</button>
+            <button id="adminSecurityTab" type="button" role="tab" aria-selected="false" aria-controls="adminSecurityPanel" data-admin-tab="security" tabindex="-1">Security</button>
+            <button id="adminMailTab" type="button" role="tab" aria-selected="false" aria-controls="adminMailPanel" data-admin-tab="mail" tabindex="-1">
+              Mail <span class="admin-mail-count" id="adminMailUnreadCount" hidden></span>
+            </button>
+            <button id="adminAdventTab" type="button" role="tab" aria-selected="false" aria-controls="adminAdventPanel" data-admin-tab="advent" tabindex="-1">Advent preview</button>
+          </div>
+          <section class="admin-tab-panel" id="adminMembersPanel" role="tabpanel" aria-labelledby="adminMembersTab" data-admin-panel="members">
+          <div class="admin-layout">
+            <section class="admin-card" aria-labelledby="adminOnlineHeading">
+              <h2 id="adminOnlineHeading">Who’s online</h2>
+              <p>Warnings and bans are available for currently online members only.</p>
+              <div class="admin-user-list" id="adminOnlineList"><p class="admin-empty">Loading online members…</p></div>
+              <p class="admin-status" id="adminOnlineStatus" role="status" aria-live="polite"></p>
+            </section>
+            <section class="admin-card" aria-labelledby="adminActionsHeading">
+              <h2 id="adminActionsHeading">Member actions</h2>
+              <div class="admin-controls">
+                <label for="adminTargetSelect">Online member
+                  <select id="adminTargetSelect"><option value="">Select a member</option></select>
+                </label>
+                <p>Global weather changes the appearance for everyone, including visitors. Members’ saved themes return when it is turned off. Only one weather mode can be active at a time.</p>
+                <div class="admin-action-row">
+                  <button class="account-button" id="adminWinterToggle" type="button" aria-pressed="false">Turn Winter mode on for everyone</button>
+                </div>
+                <p class="admin-status" id="adminWinterStatus" role="status" aria-live="polite"></p>
+                <div class="admin-action-row">
+                  <button class="account-button" id="adminCamelWeatherToggle" type="button" aria-pressed="false">Turn Camel Weather on for everyone</button>
+                </div>
+                <p class="admin-status" id="adminCamelWeatherStatus" role="status" aria-live="polite"></p>
+                <div class="admin-action-row">
+                  <button class="account-button" id="adminChristmasWeatherToggle" type="button" aria-pressed="false">Turn Christmas Weather on for everyone</button>
+                </div>
+                <p class="admin-status" id="adminChristmasWeatherStatus" role="status" aria-live="polite"></p>
+                <label for="adminWarningInput">Personal warning message
+                  <textarea id="adminWarningInput" maxlength="500" placeholder="Write a message for this member…"></textarea>
+                </label>
+                <div class="admin-action-row">
+                  <button class="account-button" id="adminWarnButton" type="button">Send warning</button>
+                </div>
+                <label for="adminBanDuration">Ban duration
+                  <select id="adminBanDuration">
+                    <option value="300">5 minutes</option>
+                    <option value="3600">1 hour</option>
+                    <option value="86400">1 day</option>
+                    <option value="604800">1 week</option>
+                    <option value="2592000">30 days</option>
+                    <option value="7776000">90 days</option>
+                    <option value="31536000">1 year</option>
+                  </select>
+                </label>
+                <div class="admin-action-row">
+                  <button class="account-button" id="adminBanButton" type="button">Ban member</button>
+                </div>
+              </div>
+              <p class="admin-status" id="adminActionStatus" role="status" aria-live="polite"></p>
+              <h2>Active bans</h2>
+              <div class="admin-ban-list" id="adminBanList"><p class="admin-empty">Loading active bans…</p></div>
+              <p class="admin-status" id="adminBanStatus" role="status" aria-live="polite"></p>
+              <section class="admin-profile" id="adminProfile" aria-live="polite" hidden>
+                <div class="admin-profile-heading">
+                  <div class="profile-avatar" id="adminProfileAvatar" aria-hidden="true">?</div>
+                  <div><h3 id="adminProfileName"></h3><p id="adminProfileRank"></p></div>
+                </div>
+                <p id="adminProfileStats"></p>
+                <p id="adminProfileCollections"></p>
+              </section>
+            </section>
+          </div>
+          </section>
+          <section class="admin-card admin-tab-panel" id="adminAccountsPanel" role="tabpanel" aria-labelledby="adminAccountsTab" data-admin-panel="accounts" hidden>
+            <h2>All accounts</h2>
+            <p>Account names, current rank, fishing progress, unlocked collections, completed quests, and online or ban status. Passwords and sign-in credentials are never shown.</p>
+            <div class="admin-account-tools">
+              <input id="adminAccountsSearch" type="search" placeholder="Search accounts" aria-label="Search accounts" />
+            </div>
+            <div class="admin-account-list" id="adminAccountsList"><p class="admin-empty">Loading accounts…</p></div>
+            <p class="admin-status" id="adminAccountsStatus" role="status" aria-live="polite"></p>
+          </section>
+          <section class="admin-tab-panel" id="adminToolsPanel" role="tabpanel" aria-labelledby="adminToolsTab" data-admin-panel="tools" hidden>
+            <div class="admin-tool-grid">
+              <section class="admin-card" aria-labelledby="adminRewardsHeading">
+                <h2 id="adminRewardsHeading">Member rewards</h2>
+                <p>Grant or remove collection items and Holiday currencies. The member’s last rank cannot be removed.</p>
+                <form class="admin-controls" id="adminRewardForm">
+                  <label for="adminRewardTarget">Member account
+                    <select id="adminRewardTarget" required><option value="">Choose an account</option></select>
+                  </label>
+                  <label for="adminRewardAction">Action
+                    <select id="adminRewardAction">
+                      <option value="grant">Grant</option>
+                      <option value="remove">Remove</option>
+                    </select>
+                  </label>
+                  <label for="adminRewardType">Reward type
+                    <select id="adminRewardType">
+                      <option value="rank">Rank</option>
+                      <option value="emoji">Emoji</option>
+                      <option value="ring">Profile ring</option>
+                      <option value="holiday_item">Holiday item</option>
+                      <option value="holiday_currency">Holiday currency</option>
+                    </select>
+                  </label>
+                  <label for="adminRewardItem">Item
+                    <select id="adminRewardItem" required><option value="">Choose an item</option></select>
+                  </label>
+                  <label for="adminRewardQuantity">Quantity
+                    <input id="adminRewardQuantity" type="number" min="1" max="100000" value="1" required />
+                  </label>
+                  <button class="primary-button" id="adminRewardSubmit" type="submit">Apply reward</button>
+                </form>
+                <p class="admin-status" id="adminRewardStatus" role="status" aria-live="polite"></p>
+              </section>
+
+              <section class="admin-card" aria-labelledby="adminAnnouncementHeading">
+                <h2 id="adminAnnouncementHeading">Announcement for everyone</h2>
+                <p>The current announcement appears to visitors and signed-in members until dismissed or replaced.</p>
+                <p class="admin-status" id="adminAnnouncementCurrent" role="status">No announcement is live.</p>
+                <form class="admin-controls" id="adminAnnouncementForm">
+                  <label for="adminAnnouncementTitle">Title
+                    <input id="adminAnnouncementTitle" maxlength="120" required />
+                  </label>
+                  <label for="adminAnnouncementMessage">Message
+                    <textarea id="adminAnnouncementMessage" maxlength="1000" required></textarea>
+                  </label>
+                  <div class="admin-action-row">
+                    <button class="primary-button" id="adminAnnouncementSubmit" type="submit">Publish announcement</button>
+                    <button class="account-button" id="adminAnnouncementClear" type="button">Clear announcement</button>
+                  </div>
+                </form>
+                <p class="admin-status" id="adminAnnouncementStatus" role="status" aria-live="polite"></p>
+              </section>
+            </div>
+
+            <section class="admin-card" aria-labelledby="adminEventsHeading">
+              <h2 id="adminEventsHeading">Manage public calendar</h2>
+              <p>Create, edit, or remove events shown to everyone on the shared calendar.</p>
+              <form class="admin-controls" id="adminEventForm">
+                <input id="adminEventId" type="hidden" />
+                <label for="adminEventTitle">Event title
+                  <input id="adminEventTitle" maxlength="80" required />
+                </label>
+                <div class="field-row">
+                  <label class="field-group" for="adminEventDate">Date
+                    <input id="adminEventDate" type="date" required />
+                  </label>
+                  <label class="field-group" for="adminEventTime">Time
+                    <input id="adminEventTime" type="time" />
+                  </label>
+                </div>
+                <label for="adminEventCategory">Color
+                  <select id="adminEventCategory">
+                    <option value="violet">Dreamy lilac</option>
+                    <option value="coral">Peachy keen</option>
+                    <option value="mint">Mint condition</option>
+                    <option value="blue">Blue skies</option>
+                    <option value="yellow">Golden hour</option>
+                    <option value="pink">Pink pop</option>
+                    <option value="orange">Tangerine</option>
+                    <option value="teal">Sea glass</option>
+                    <option value="indigo">Periwinkle</option>
+                  </select>
+                </label>
+                <label for="adminEventRecurrence">Repeat
+                  <select id="adminEventRecurrence">
+                    <option value="none">Does not repeat</option>
+                    <option value="daily">Every day</option>
+                    <option value="weekly">Every week</option>
+                    <option value="monthly">Every month</option>
+                  </select>
+                </label>
+                <label for="adminEventNotes">Note
+                  <textarea id="adminEventNotes" maxlength="240" rows="2"></textarea>
+                </label>
+                <div class="admin-action-row">
+                  <button class="primary-button" id="adminEventSubmit" type="submit">Add event</button>
+                  <button class="account-button" id="adminEventCancelEdit" type="button" hidden>Cancel edit</button>
+                </div>
+              </form>
+              <p class="admin-status" id="adminEventStatus" role="status" aria-live="polite"></p>
+              <div class="admin-event-list" id="adminEventList"><p class="admin-empty">Load public calendar events to manage them.</p></div>
+            </section>
+          </section>
+          <section class="admin-card admin-tab-panel" id="adminSecurityPanel" role="tabpanel" aria-labelledby="adminSecurityTab" data-admin-panel="security" hidden>
+            <h2>Account security</h2>
+            <p>Passwords are never displayed. Resetting replaces the password hash and signs that account out everywhere. Confirm your admin password before each security change.</p>
+            <div class="admin-action-row">
+              <button class="account-button" id="adminRegistrationToggle" type="button">Loading registration setting…</button>
+            </div>
+            <p class="admin-status" id="adminRegistrationStatus" role="status" aria-live="polite"></p>
+            <form class="admin-controls" id="adminResetPasswordForm">
+              <h3>Reset an account password</h3>
+              <label for="adminResetAccount">Account
+                <select id="adminResetAccount" required><option value="">Choose an account</option></select>
+              </label>
+              <label for="adminResetNewPassword">New password
+                <input id="adminResetNewPassword" type="password" minlength="8" maxlength="128" autocomplete="new-password" required />
+              </label>
+              <label for="adminSecurityPassword">Your admin password (confirmation)
+                <input id="adminSecurityPassword" type="password" minlength="8" maxlength="128" autocomplete="current-password" required />
+              </label>
+              <button class="account-button" id="adminResetPasswordButton" type="submit">Reset password and sign out sessions</button>
+            </form>
+            <p class="admin-status" id="adminSecurityStatus" role="status" aria-live="polite"></p>
+            <h3>Active sessions</h3>
+            <div class="admin-mail-list" id="adminSecuritySessions"><p class="admin-empty">Loading sessions…</p></div>
+            <h3>Recent account activity</h3>
+            <p>Activity entries include sign-ins, failed attempts, registration changes, resets, and session revocations. Passwords are never recorded.</p>
+            <div class="admin-mail-list" id="adminSecurityAudit"><p class="admin-empty">Loading security activity…</p></div>
+          </section>
+          <section class="admin-card admin-tab-panel" id="adminMailPanel" role="tabpanel" aria-labelledby="adminMailTab" data-admin-panel="mail" hidden>
+            <h2>Mail from members</h2>
+            <p>Reports from everyone except Rufus appear here.</p>
+            <div class="admin-mail-list" id="adminMailList"><p class="admin-empty">Loading reports…</p></div>
+            <p class="admin-status" id="adminMailStatus" role="status" aria-live="polite"></p>
+          </section>
+          <section class="admin-card admin-tab-panel" id="adminAdventPanel" role="tabpanel" aria-labelledby="adminAdventTab" data-admin-panel="advent" hidden>
+            <h2>Advent Calendar preview</h2>
+            <p>Rufus can preview each reward here. These gold-framed reward cards are read-only; claims are only available from the Advent Calendar app on their scheduled day.</p>
+            <div class="admin-advent-rewards" id="adminAdventRewards" aria-label="Advent Calendar reward preview"></div>
+            <p class="admin-advent-status" id="adminAdventStatus" role="status" aria-live="polite"></p>
+          </section>
+        </section>
+
+        <section class="page-content app-page" id="exportPage" hidden>
+          <header class="seasonal-heading">
+            <p class="eyebrow">YOUR ACCOUNT, YOUR BACKUP</p>
+            <h1>Export / import<span class="heading-period">.</span></h1>
+            <p class="welcome-subtitle">Download your account progress, create a separate account, or restore a backup to the account you are signed into.</p>
+          </header>
+          <div class="export-layout">
+            <section class="export-card" aria-labelledby="exportAccountHeading">
+              <h2 id="exportAccountHeading">Download account</h2>
+              <p>Save your username, profile picture, fish count, equipped rank, unlocked ranks and emojis, and completed side quests in a portable JSON backup. Your password is never included.</p>
+              <button class="primary-button" id="exportAccountButton" type="button">Download backup <span aria-hidden="true">↓</span></button>
+              <p class="export-status" id="exportStatus" role="status" aria-live="polite"></p>
+            </section>
+            <form class="export-card" id="importAccountForm">
+              <h2 id="importAccountHeading">Import or restore account</h2>
+              <p>A backup creates a separate account if its username is available. To restore a backup for the account you are signed into, use the same username; its current password is kept. Other existing accounts cannot be overwritten.</p>
+              <label for="importBackupFile">Account backup
+                <input id="importBackupFile" type="file" accept=".json,application/json" required />
+              </label>
+              <label for="importAccountPassword">New password (only when creating an account)
+                <input id="importAccountPassword" type="password" minlength="8" maxlength="128" autocomplete="new-password" />
+              </label>
+              <button class="primary-button" id="importAccountButton" type="submit">Import / restore backup <span aria-hidden="true">↗</span></button>
+              <p class="export-status" id="importStatus" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </section>
+
+        <section class="page-content app-page" id="updatesPage" hidden>
+          <header class="seasonal-heading">
+            <p class="eyebrow">WHAT'S NEW IN DAYGLOW</p>
+            <h1>Updates<span class="heading-period">.</span></h1>
+            <p class="welcome-subtitle">The latest changes and release notes.</p>
+          </header>
+          <div class="update-history" id="updateHistory" aria-live="polite">
+            <p class="export-status">Loading update history…</p>
+          </div>
+          <p class="page-status" id="updatesStatus" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="page-content app-page christmas-page" id="christmasPage" hidden>
+          <header class="seasonal-heading">
+            <p class="eyebrow"><span class="eyebrow-star">✳</span> COUNTING DOWN TO THE HOLIDAYS</p>
+            <h1>Christmas<span class="heading-period">.</span></h1>
+            <p class="welcome-subtitle">A little holiday countdown for Hoilday.</p>
+          </header>
+          <div class="christmas-lights" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="christmas-countdown-grid">
+            <article class="christmas-countdown-card" aria-labelledby="christmasCountdownTitle">
+              <h2 id="christmasCountdownTitle">Christmas Day</h2>
+              <p class="christmas-countdown-label" id="christmasTargetDate"></p>
+              <div class="christmas-countdown-units" id="christmasCountdownUnits" role="timer" aria-label="Time until Christmas">
+                <span><strong id="christmasDays">0</strong><small>Days</small></span>
+                <span><strong id="christmasHours">00</strong><small>Hours</small></span>
+                <span><strong id="christmasMinutes">00</strong><small>Minutes</small></span>
+                <span><strong id="christmasSeconds">00</strong><small>Seconds</small></span>
+              </div>
+              <p class="christmas-countdown-message" id="christmasCountdownMessage" role="status" hidden></p>
+            </article>
+            <article class="christmas-countdown-card" aria-labelledby="adventCountdownTitle">
+              <h2 id="adventCountdownTitle">Advent Calendar update</h2>
+              <p class="christmas-countdown-label" id="adventTargetDate">December 1, 2026</p>
+              <div class="christmas-countdown-units" id="adventCountdownUnits" role="timer" aria-label="Time until the Advent Calendar update">
+                <span><strong id="adventDays">0</strong><small>Days</small></span>
+                <span><strong id="adventHours">00</strong><small>Hours</small></span>
+                <span><strong id="adventMinutes">00</strong><small>Minutes</small></span>
+                <span><strong id="adventSeconds">00</strong><small>Seconds</small></span>
+              </div>
+              <p class="christmas-countdown-message" id="adventCountdownMessage" role="status" hidden></p>
+            </article>
+          </div>
+          <p class="christmas-page-note">The Advent Calendar update is planned for December 1, 2026.</p>
+        </section>
+
+        <section class="page-content app-page" id="browserAppearancePage" hidden>
+          <header class="seasonal-heading">
+            <p class="eyebrow">MAKE YOUR HOME SCREEN YOURS</p>
+            <h1>Browser appearance<span class="heading-period">.</span></h1>
+            <p class="welcome-subtitle">Choose an image to use behind your home-screen apps. This setting is saved in this browser only.</p>
+          </header>
+          <section class="export-card" aria-labelledby="homeBackgroundHeading">
+            <h2 id="homeBackgroundHeading">Home screen background</h2>
+            <p>Upload a JPEG, PNG, or WebP image up to 5 MB. The image is resized and stored on this device.</p>
+            <div class="home-background-preview" id="homeBackgroundPreview" aria-label="Current home-screen background">
+              <span id="homeBackgroundPreviewEmpty">No custom image selected</span>
+            </div>
+            <label for="homeBackgroundInput">Choose an image
+              <input id="homeBackgroundInput" type="file" accept="image/jpeg,image/png,image/webp" />
+            </label>
+            <div class="home-background-actions">
+              <button class="account-button" id="removeHomeBackgroundButton" type="button">Use default background</button>
+            </div>
+            <p class="export-status" id="homeBackgroundStatus" role="status" aria-live="polite"></p>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div class="weather-effects" id="weatherEffects" aria-hidden="true" hidden></div>
+    <div class="notification-banner-host" id="notificationBannerHost" aria-live="polite" aria-relevant="additions"></div>
+
+    <dialog class="event-dialog warning-dialog" id="warningDialog" aria-labelledby="warningDialogTitle">
+      <div class="warning-dialog-content">
+        <p class="eyebrow">ACCOUNT MESSAGE</p>
+        <h2 id="warningDialogTitle">A message from the admin</h2>
+        <p class="warning-dialog-message" id="warningDialogMessage"></p>
+        <button class="primary-button" id="closeWarningButton" type="button">Got it</button>
+      </div>
+    </dialog>
+
+    <dialog class="event-dialog auto-ban-dialog" id="autoBanDialog" aria-labelledby="autoBanTitle">
+      <div class="auto-ban-content">
+        <p class="eyebrow">AUTOMATIC CHAT MODERATION</p>
+        <div class="auto-ban-emoji" id="autoBanEmoji" role="img" aria-label="Prohibited">🚫</div>
+        <h2 id="autoBanTitle">Your account is temporarily banned</h2>
+        <p class="auto-ban-reason" id="autoBanReason"></p>
+        <p class="auto-ban-duration" id="autoBanDuration"></p>
+        <button class="primary-button" id="closeAutoBanButton" type="button">I understand</button>
+      </div>
+    </dialog>
+
+    <dialog class="event-dialog update-dialog" id="updateDialog" aria-labelledby="updateDialogTitle">
+      <div class="update-dialog-content">
+        <div class="dialog-top">
+          <div>
+            <p class="eyebrow">WHAT'S NEW IN DAYGLOW</p>
+            <h2 id="updateDialogTitle">Game update</h2>
+          </div>
+          <button class="dialog-close" id="closeUpdateDialogButton" type="button" aria-label="Close update log">×</button>
+        </div>
+        <p class="update-dialog-description" id="updateDialogDescription"></p>
+      </div>
+    </dialog>
+
+    <dialog class="event-dialog" id="eventDialog" aria-labelledby="dialogTitle">
+      <form class="event-form" id="eventForm">
+        <div class="dialog-top">
+          <div>
+            <p class="eyebrow" id="dialogEyebrow">MAKE A LITTLE PLAN</p>
+            <h2 id="dialogTitle">Add an event</h2>
+          </div>
+          <button class="dialog-close" id="closeDialogButton" type="button" aria-label="Close dialog">×</button>
+        </div>
+
+        <label class="field-label" for="eventTitle">What’s the plan?</label>
+        <input id="eventTitle" name="title" type="text" maxlength="80" placeholder="Give it a name" required />
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label" for="eventDate">Date</label>
+            <input id="eventDate" name="date" type="date" required />
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="eventTime">Time <span class="optional-label">optional</span></label>
+            <input id="eventTime" name="time" type="time" />
+          </div>
+        </div>
+
+        <label class="field-label" for="eventCategory">Give it a color</label>
+        <select id="eventCategory" name="category">
+          <option value="violet">Dreamy lilac</option>
+          <option value="coral">Peachy keen</option>
+          <option value="mint">Mint condition</option>
+          <option value="blue">Blue skies</option>
+          <option value="yellow">Golden hour</option>
+          <option value="pink">Pink pop</option>
+          <option value="orange">Tangerine</option>
+          <option value="teal">Sea glass</option>
+          <option value="indigo">Periwinkle</option>
+        </select>
+
+        <label class="field-label" for="eventRecurrence">Repeat</label>
+        <select id="eventRecurrence" name="recurrence">
+          <option value="none">Does not repeat</option>
+          <option value="daily">Every day</option>
+          <option value="weekly">Every week</option>
+          <option value="monthly">Every month</option>
+        </select>
+
+        <label class="field-label" for="eventNotes">A little note <span class="optional-label">optional</span></label>
+        <textarea id="eventNotes" name="notes" rows="3" maxlength="240" placeholder="Anything you want to remember?"></textarea>
+
+        <p class="form-error" id="formError" role="alert"></p>
+        <div class="dialog-actions">
+          <button class="delete-button" id="deleteEventButton" type="button" hidden>Delete event</button>
+          <button class="primary-button save-button" type="submit"><span id="saveButtonText">Save event</span><span aria-hidden="true">↗</span></button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="event-dialog auth-dialog" id="authDialog" aria-labelledby="authTitle">
+      <form class="event-form" id="authForm">
+        <div class="dialog-top">
+          <div>
+            <p class="eyebrow">YOUR DAYGLOW ACCOUNT</p>
+            <h2 id="authTitle">Sign in</h2>
+          </div>
+          <button class="dialog-close" id="closeAuthButton" type="button" aria-label="Close account dialog">×</button>
+        </div>
+        <p class="settings-note" id="authDescription">Sign in to add and edit events on the public calendar.</p>
+        <label class="field-label" for="authUsername">Username</label>
+        <input id="authUsername" name="username" type="text" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" autocomplete="username" placeholder="your_name" required />
+        <label class="field-label" for="authPassword">Password</label>
+        <input id="authPassword" name="password" type="password" minlength="8" autocomplete="current-password" required />
+        <p class="auth-message" id="authMessage" role="status" aria-live="polite"></p>
+        <div class="dialog-actions">
+          <button class="auth-switch" id="authModeButton" type="button">Create an account</button>
+          <button class="primary-button save-button" id="authSubmitButton" type="submit">Sign in <span aria-hidden="true">↗</span></button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="settings-overlay" id="settingsOverlay" hidden>
+      <section class="event-dialog settings-dialog" id="settingsPanel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" tabindex="-1">
+        <form class="event-form settings-form" id="settingsForm">
+          <div class="dialog-top">
+            <div>
+              <p class="eyebrow">MAKE IT YOURS</p>
+              <h2 id="settingsTitle">Settings</h2>
+            </div>
+            <button class="dialog-close" id="closeSettingsButton" type="button" aria-label="Close settings">×</button>
+          </div>
+
+          <div class="settings-layout">
+            <nav class="settings-nav" role="tablist" aria-label="Settings categories" aria-orientation="vertical">
+              <button class="settings-tab" id="appearanceTab" type="button" role="tab" aria-selected="false" aria-controls="appearancePanel" data-settings-tab="appearance" tabindex="-1">
+                <span class="settings-tab-icon" aria-hidden="true">◐</span> Appearance
+              </button>
+              <button class="settings-tab" id="calendarTab" type="button" role="tab" aria-selected="false" aria-controls="calendarPanel" data-settings-tab="calendar" tabindex="-1">
+                <span class="settings-tab-icon" aria-hidden="true">▦</span> Calendar
+              </button>
+              <button class="settings-tab" id="appsTab" type="button" role="tab" aria-selected="false" aria-controls="appsPanel" data-settings-tab="apps" tabindex="-1">
+                <span class="settings-tab-icon" aria-hidden="true">▦</span> Apps
+              </button>
+            </nav>
+
+            <div class="settings-content">
+              <section class="settings-panel" id="appearancePanel" role="tabpanel" aria-labelledby="appearanceTab" data-settings-panel="appearance" hidden>
+                <div class="settings-card">
+                  <h3>Color theme</h3>
+                  <label class="field-label" for="backgroundTheme">Background color</label>
+                  <select id="backgroundTheme" name="theme">
+                    <option value="midnight">Midnight</option>
+                    <option value="plum">Plum</option>
+                    <option value="ocean">Ocean</option>
+                    <option value="forest">Forest</option>
+                    <option value="sunset">Sunset</option>
+                    <option value="candy">Candy</option>
+                    <option value="lagoon">Lagoon</option>
+                    <option value="citrus">Citrus</option>
+                    <option value="cobalt">Cobalt</option>
+                    <option value="berry">Berry</option>
+                  </select>
+                  <p>Choose the atmosphere that feels right for your space.</p>
+                  <p id="winterModeNotice" hidden></p>
+                </div>
+                <div class="settings-card">
+                  <h3>Display</h3>
+                  <label class="field-label" for="calendarDensity">Calendar density</label>
+                  <select id="calendarDensity" name="density">
+                    <option value="comfortable">Comfortable</option>
+                    <option value="compact">Compact</option>
+                  </select>
+                  <label class="setting-toggle"><input id="highContrast" type="checkbox" /><span>Increase contrast <small>Strengthen borders and muted text.</small></span></label>
+                  <label class="setting-toggle"><input id="reduceMotion" type="checkbox" /><span>Reduce animations <small>Minimize movement throughout the app.</small></span></label>
+                </div>
+              </section>
+
+              <section class="settings-panel" id="calendarPanel" role="tabpanel" aria-labelledby="calendarTab" data-settings-panel="calendar" hidden>
+                <div class="settings-card">
+                  <h3>Calendar layout</h3>
+                  <label class="field-label" for="weekStartsOn">Week starts on</label>
+                  <select id="weekStartsOn" name="weekStartsOn">
+                    <option value="monday">Monday</option>
+                    <option value="sunday">Sunday</option>
+                  </select>
+                  <label class="field-label" for="timeFormat">Time format</label>
+                  <select id="timeFormat" name="timeFormat">
+                    <option value="12-hour">12-hour</option>
+                    <option value="24-hour">24-hour</option>
+                  </select>
+                </div>
+                <div class="settings-card">
+                  <h3>New event defaults</h3>
+                  <label class="field-label" for="defaultEventCategory">Default event color</label>
+                  <select id="defaultEventCategory" name="defaultEventCategory">
+                    <option value="violet">Dreamy lilac</option>
+                    <option value="coral">Peachy keen</option>
+                    <option value="mint">Mint condition</option>
+                    <option value="blue">Blue skies</option>
+                    <option value="yellow">Golden hour</option>
+                    <option value="pink">Pink pop</option>
+                    <option value="orange">Tangerine</option>
+                    <option value="teal">Sea glass</option>
+                    <option value="indigo">Periwinkle</option>
+                  </select>
+                  <p>This color is preselected whenever you add a new event. You can still change it per event.</p>
+                </div>
+              </section>
+
+              <section class="settings-panel" id="appsPanel" role="tabpanel" aria-labelledby="appsTab" data-settings-panel="apps" hidden>
+                <div class="settings-card settings-card-wide">
+                  <h3>Home screen app order</h3>
+                  <p>Move apps up or down to arrange them on your home screen. Your order is saved on this device.</p>
+                  <ol class="home-app-order" id="homeAppOrderList" aria-label="Home screen app order"></ol>
+                  <button class="account-button home-app-order-reset" id="resetHomeAppOrderButton" type="button">Reset app order</button>
+                  <p class="settings-note" id="homeAppOrderStatus" role="status" aria-live="polite"></p>
+                </div>
+              </section>
+            </div>
+          </div>
+
+          <div class="settings-footer">
+            <p class="form-error" id="settingsError" role="alert"></p>
+            <div class="dialog-actions">
+              <button class="primary-button save-button" type="submit"><span>Save settings</span><span aria-hidden="true">↗</span></button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

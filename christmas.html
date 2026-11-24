@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#142a25" />
+  <title>Christmas · Holiday</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #fff8eb;
+      background: #101914;
+      --panel: rgba(16, 34, 27, .88);
+      --line: rgba(255, 255, 255, .13);
+      --muted: #c6d6c9;
+      --red: #f66c73;
+      --green: #64d99b;
+      --gold: #ffd37f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 10% 3%, rgba(196, 44, 58, .36), transparent 35%),
+        radial-gradient(ellipse at 94% 28%, rgba(29, 132, 82, .3), transparent 34%),
+        linear-gradient(145deg, #1a3327, #101914 64%, #25191b);
+    }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    .wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 22px 0 70px; }
+    .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .top-actions { display: flex; gap: 8px; align-items: center; }
+    .top a, .button, .tab, .day-card, .shop-item, .color-card {
+      border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.07);
+    }
+    .top a, .button { padding: 10px 14px; cursor: pointer; text-decoration: none; }
+    .top a:hover, .button:hover:not(:disabled) { background: rgba(255,255,255,.13); }
+    .app-nav { display: flex; gap: 7px; overflow-x: auto; margin: 10px 0 0; padding: 4px 0 10px; }
+    .app-nav a { flex: 0 0 auto; padding: 8px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); text-decoration: none; font-size: 12px; }
+    .app-nav a:hover, .app-nav a[aria-current="page"] { color: #183125; border-color: transparent; background: #9be4a8; }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 750; letter-spacing: .08em; }
+    .brand-mark { display: grid; width: 35px; height: 35px; place-items: center; border-radius: 11px; background: linear-gradient(145deg, #fa7776, #a3263c); font-size: 19px; }
+    .hero { padding: 50px 0 24px; text-align: center; }
+    .eyebrow { color: #a7e5b7; font-size: 10px; font-weight: 750; letter-spacing: .18em; text-transform: uppercase; }
+    h1 { margin: 8px 0; font-size: clamp(32px, 6vw, 58px); letter-spacing: -.05em; }
+    .hero p, .intro { max-width: 650px; margin: 8px auto; color: var(--muted); line-height: 1.65; }
+    .status { min-height: 24px; margin: 8px 0; color: var(--gold); font-size: 13px; }
+    .tabs { display: flex; gap: 8px; overflow-x: auto; padding: 12px 0 15px; }
+    .tab { flex: 0 0 auto; padding: 10px 14px; cursor: pointer; }
+    .tab[aria-selected="true"] { border-color: rgba(255,211,127,.56); background: rgba(255,211,127,.13); }
+    .tab:disabled { opacity: .43; cursor: not-allowed; }
+    .panel { padding: clamp(17px, 3vw, 28px); border: 1px solid var(--line); border-radius: 20px; background: var(--panel); box-shadow: 0 18px 48px rgba(0,0,0,.2); }
+    .panel[hidden] { display: none; }
+    .panel h2 { margin: 0 0 7px; font-size: 22px; }
+    .muted { color: var(--muted); line-height: 1.55; }
+    .currency-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .currency { padding: 8px 11px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.06); font-size: 12px; font-weight: 700; }
+    .calendar-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 9px; margin-top: 20px; }
+    .day-card { min-width: 0; min-height: 112px; display: grid; grid-template-rows: auto 1fr auto; justify-items: center; gap: 5px; padding: 10px 5px 8px; cursor: pointer; text-align: center; transition: transform .15s, border-color .15s; }
+    .day-card:hover { transform: translateY(-2px); border-color: rgba(255,211,127,.48); }
+    .day-card[aria-pressed="true"] { border-color: var(--gold); box-shadow: 0 0 0 1px rgba(255,211,127,.2); }
+    .day-number { justify-self: start; color: #f6d69d; font-size: 11px; }
+    .day-icon { align-self: center; font-size: clamp(22px, 4vw, 32px); }
+    .day-state { width: 100%; padding: 5px 2px; border-radius: 7px; color: #c3d1c6; background: rgba(255,255,255,.07); font-size: 9px; }
+    .day-card.is-claimable { border-color: rgba(100,217,155,.6); background: rgba(48,137,86,.18); }
+    .day-card.is-claimable .day-state { color: #0e2b1d; background: #83e6ab; font-weight: 800; }
+    .day-card.is-claimed .day-state { color: #b8efcc; }
+    .day-card.is-future { opacity: .68; }
+    .day-detail { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-top: 17px; padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.045); }
+    .day-detail h3 { margin: 0 0 4px; }
+    .day-detail p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .button.primary { border-color: transparent; color: #183125; background: linear-gradient(135deg, #9be4a8, #e1efaa); font-weight: 800; }
+    .button:disabled { opacity: .45; cursor: not-allowed; }
+    .feature-grid, .shop-grid, .color-grid, .tour-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; margin-top: 18px; }
+    .feature-card, .shop-item, .color-card,     .tour-card { padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.045); text-align: left; cursor: pointer; }
+    .feature-card h3, .shop-item h3, .color-card h3 { margin: 4px 0; }
+    .shop-item { display: grid; align-content: start; gap: 9px; }
+    .shop-item p, .color-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .shop-item .button { justify-self: start; }
+    .odds { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 7px; margin: 16px 0; }
+    .odds span { padding: 9px 10px; border-radius: 9px; background: rgba(255,255,255,.06); font-size: 12px; }
+    .fish-result { min-height: 28px; color: var(--gold); }
+    .profile-preview { padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: rgba(0,0,0,.16); }
+    .styled-name { display: inline-flex; gap: .01em; font-weight: 850; font-size: 21px; }
+    .styled-name span { position: relative; }
+    .styled-name.decorated span::before { content: attr(data-decoration); position: absolute; top: -.78em; left: 50%; font-size: .43em; transform: translateX(-50%); }
+    .color-red { color: #ff626b; }
+    .color-white { color: #fff; text-shadow: 0 0 10px #dcefff; }
+    .color-gold { color: #ffd667; }
+    .color-candy_cane { color: #fff; background: repeating-linear-gradient(135deg, #f2545c 0 4px, #fff 4px 8px); background-clip: text; -webkit-text-fill-color: transparent; }
+    .color-winter { color: #f3fcff; text-shadow: 0 0 5px #83e7ff, 0 0 13px #299ad8; }
+    .color-gummy { color: #a8ed69; }
+    .color-thanksgiving { color: #d7783f; }
+    .color-present, .color-reindeer, .color-christmas { background: linear-gradient(90deg, #ff4d5b 50%, #56df87 50%); background-clip: text; -webkit-text-fill-color: transparent; }
+    .color-present { background: linear-gradient(90deg, #ff4d5b 50%, #ffd15f 50%); }
+    .color-northern_lights { background: linear-gradient(90deg, #56f2be, #8b8bff, #fff); background-clip: text; -webkit-text-fill-color: transparent; }
+    .tree-room { min-height: 390px; display: grid; place-items: end center; position: relative; overflow: hidden; margin: 18px 0; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: radial-gradient(ellipse at 50% 95%, rgba(74,145,89,.3), transparent 50%), linear-gradient(#142820, #1a3025); }
+    .tree { width: min(310px, 76vw); height: 340px; position: relative; }
+    .tree-tier { position: absolute; left: 50%; width: 0; height: 0; border-right: 100px solid transparent; border-bottom: 125px solid #278457; border-left: 100px solid transparent; transform: translateX(-50%); filter: drop-shadow(0 6px 0 rgba(5,42,27,.5)); }
+    .tier-one { top: 20px; border-right-width: 83px; border-bottom-width: 112px; border-left-width: 83px; }
+    .tier-two { top: 91px; border-right-width: 123px; border-bottom-width: 145px; border-left-width: 123px; border-bottom-color: #1e7049; }
+    .tier-three { top: 180px; border-right-width: 155px; border-bottom-width: 160px; border-left-width: 155px; border-bottom-color: #185e3d; }
+    .trunk { width: 50px; height: 57px; position: absolute; bottom: 0; left: 50%; background: #805337; transform: translateX(-50%); border-radius: 4px; }
+    .star { position: absolute; top: -1px; left: 50%; color: #ffe27d; font-size: 33px; text-shadow: 0 0 18px #ffdb61; transform: translateX(-50%); }
+    .bulbs { position: absolute; inset: 52px 25px 22px; pointer-events: none; }
+    .bulb { width: 9px; height: 9px; position: absolute; border-radius: 50%; background: var(--bulb); box-shadow: 0 0 12px 3px var(--bulb); }
+    .strand { position: absolute; left: 50%; width: 176px; height: 92px; border: 2px solid rgba(255,220,145,.7); border-top-color: transparent; border-radius: 0 0 50% 50%; transform: translateX(-50%); }
+    .strand-one { top: 74px; }
+    .strand-two { top: 164px; width: 244px; height: 104px; }
+    .auth-box { max-width: 390px; margin: 20px auto 0; padding: 15px; border: 1px solid var(--line); border-radius: 13px; background: rgba(0,0,0,.17); }
+    .auth-box[hidden] { display: none; }
+    .auth-box label { display: block; margin: 10px 0 5px; color: var(--muted); font-size: 12px; }
+    .auth-box input { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 9px; color: inherit; background: rgba(0,0,0,.25); }
+    #collectionSearch { width: min(100%, 390px); margin: 8px 0 12px; padding: 10px; border: 1px solid var(--line); border-radius: 9px; color: inherit; background: rgba(0,0,0,.25); }
+    body.single-app .tabs { display: none; }
+    body.single-app .hero { padding-top: 36px; }
+    @media (max-width: 560px) {
+      .wrap { width: min(100% - 20px, 1120px); padding-top: 12px; }
+      .top a, .button { padding: 9px 10px; font-size: 12px; }
+      .hero { padding-top: 36px; }
+      .calendar-grid { gap: 5px; }
+      .day-card { min-height: 89px; padding: 7px 2px 6px; border-radius: 9px; }
+      .day-state { font-size: 8px; }
+      .day-detail { align-items: stretch; flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a href="./index.html" aria-label="Return to Hoilday home">← Home</a>
+      <div class="brand"><span class="brand-mark" aria-hidden="true">H</span> HOLIDAY</div>
+      <div class="top-actions">
+        <button class="button" id="accountButton" type="button">Sign in</button>
+      </div>
+    </header>
+    <nav class="app-nav" aria-label="Holiday apps">
+      <a href="./christmas.html?app=advent" data-app-link="advent">📅 Advent</a>
+      <a href="./christmas.html?app=fishing" data-app-link="fishing">🎣 Fishing</a>
+      <a href="./christmas.html?app=shop" data-app-link="shop">🛍️ Shop</a>
+      <a href="./christmas.html?app=colors" data-app-link="colors">🎨 Colors</a>
+      <a href="./christmas.html?app=tree" data-app-link="tree">🌲 Tree</a>
+    </nav>
+    <section class="hero">
+      <p class="eyebrow">December 1–25, 2026</p>
+      <h1>Advent Calendar</h1>
+      <p id="appDescription">Open a new door each day, collect gifts, and make the holidays your own. Future gifts are here to preview, but they stay locked until their day.</p>
+      <div class="status" id="status" role="status" aria-live="polite"></div>
+      <section class="auth-box" id="authBox" hidden>
+        <form id="authForm">
+          <label for="username">Username</label>
+          <input id="username" name="username" autocomplete="username" minlength="3" maxlength="20" required />
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" minlength="8" required />
+          <p class="muted" id="authMessage">Sign in or create an account to save your rewards.</p>
+          <button class="button primary" id="authSubmit" type="submit">Sign in</button>
+          <button class="button" id="authMode" type="button">Create an account</button>
+        </form>
+      </section>
+    </section>
+    <nav class="tabs" aria-label="Christmas apps">
+      <button class="tab" type="button" data-tab="calendar" aria-selected="true">🗓️ Calendar</button>
+      <button class="tab" type="button" data-tab="fishing" aria-selected="false" disabled>🎣 Holiday fishing</button>
+      <button class="tab" type="button" data-tab="shop" aria-selected="false" disabled>🛍️ Holiday shop</button>
+      <button class="tab" type="button" data-tab="colors" aria-selected="false" disabled>🎨 Text colors</button>
+      <button class="tab" type="button" data-tab="tree" aria-selected="false" disabled>🌲 Tree room</button>
+    </nav>
+    <section class="panel" data-panel="calendar">
+      <h2>Choose a day</h2>
+      <p class="muted">Select a door to see its gift. Gray claim boxes are not ready yet; rewards can only be claimed on the matching day.</p>
+      <div class="currency-row" id="currencyRow"></div>
+      <div class="calendar-grid" id="calendarGrid" aria-label="Advent Calendar days"></div>
+      <div class="day-detail" id="dayDetail" aria-live="polite">
+        <div><h3 id="detailTitle">Loading the calendar…</h3><p id="detailDescription"></p></div>
+        <button class="button primary" id="claimButton" type="button" disabled>Claim reward</button>
+      </div>
+    </section>
+    <section class="panel" data-panel="fishing" hidden>
+      <h2>Holiday fishing</h2>
+      <p class="muted">Catch a festive surprise every 3 seconds. Each holiday catch also adds one to your fish total.</p>
+      <div class="odds" id="holidayOdds"></div>
+      <p class="muted" id="holidayOddsNote"></p>
+      <button class="button primary" id="fishButton" type="button">Cast a festive line</button>
+      <p class="fish-result" id="fishResult" role="status" aria-live="polite"></p>
+    </section>
+    <section class="panel" data-panel="shop" hidden>
+      <h2>Holiday shop</h2>
+      <p class="muted">Spend your seasonal currencies on collectible ranks, a profile ring, weather tokens, and text colors.</p>
+      <div class="currency-row" id="shopCurrencies"></div>
+      <p class="muted" id="holidayStats"></p>
+      <div class="shop-grid" id="shopGrid"></div>
+      <div class="feature-card" id="tokenCard"></div>
+      <h3>Your Holiday collection</h3>
+      <input id="collectionSearch" type="search" placeholder="Search your Holiday collection" aria-label="Search Holiday collection" />
+      <div class="feature-grid" id="holidayCollection"></div>
+      <p class="status" id="shopStatus" role="status" aria-live="polite"></p>
+    </section>
+    <section class="panel" data-panel="colors" hidden>
+      <h2>Text Color Fishing</h2>
+      <p class="muted">Fish for a username style, then equip one to show it beside your profile name across Hoilday.</p>
+      <div class="odds">
+        <span>❤️ Red · 60.3%</span><span>🤍 White · 30%</span><span>💛 Gold · 9%</span>
+        <span>🦌 Reindeer · 0.6%</span><span>🎄 Christmas · 0.1%</span>
+      </div>
+      <button class="button primary" id="colorFishButton" type="button">Fish for a text color</button>
+      <p class="fish-result" id="colorResult" role="status" aria-live="polite"></p>
+      <div class="profile-preview">Your name: <strong id="namePreview" class="styled-name">Guest</strong></div>
+      <div class="color-grid" id="colorGrid"></div>
+    </section>
+    <section class="panel" data-panel="tree" hidden>
+      <h2 id="treeRoomTitle">Your Christmas tree room</h2>
+      <p class="muted">Fish for lights and emoji strands, decorate your own tree, and visit the tree rooms other members have opened.</p>
+      <div class="tree-room" id="treeRoom" aria-label="Decorated Christmas tree">
+        <div class="tree">
+          <span class="star" aria-hidden="true">★</span>
+          <div class="tree-tier tier-one"></div><div class="tree-tier tier-two"></div><div class="tree-tier tier-three"></div>
+          <div class="strand strand-one"></div><div class="strand strand-two"></div>
+          <div class="bulbs" id="treeBulbs"></div><div class="trunk"></div>
+        </div>
+      </div>
+      <p class="muted" id="treeInventory"></p>
+      <label for="bulbPalette">Bulb palette</label>
+      <select id="bulbPalette" class="button">
+        <option value="classic">Classic</option>
+        <option value="icy">Icy</option>
+        <option value="candy">Candy</option>
+        <option value="rainbow">Rainbow</option>
+      </select>
+      <button class="button primary" id="treeFishButton" type="button">Fish for decorations</button>
+      <button class="button" id="returnToMyTree" type="button" hidden>Return to my tree</button>
+      <p class="fish-result" id="treeResult" role="status" aria-live="polite"></p>
+      <h3>Visit a tree room</h3>
+      <div class="tour-grid" id="tourGrid"></div>
+    </section>
+  </main>
+  <script>
+    const TOKEN_KEY = 'dayglow-server-session';
+    const COLOR_NAMES = {
+      red_text_color: 'Red', white_text_color: 'White', gold_text_color: 'Gold',
+      reindeer_text_color: 'Reindeer', christmas_text_color: 'Christmas',
+      present_text_color: 'Present', candy_cane_text_color: 'Candy Cane',
+      winter_text_color: 'Winter', gummy_text_color: 'Gummy',
+      northern_lights_text_color: 'Northern Lights',
+      thanksgiving_text_color: 'Thanksgiving'
+    };
+    const COLOR_CLASSES = {
+      red_text_color: 'red', white_text_color: 'white', gold_text_color: 'gold',
+      reindeer_text_color: 'reindeer', christmas_text_color: 'christmas',
+      present_text_color: 'present', candy_cane_text_color: 'candy_cane',
+      winter_text_color: 'winter', gummy_text_color: 'gummy',
+      northern_lights_text_color: 'northern_lights',
+      thanksgiving_text_color: 'thanksgiving'
+    };
+    const DECORATIONS = {
+      reindeer_text_color: '🦌', christmas_text_color: '🎄',
+      present_text_color: '🎁', gummy_text_color: '🐻',
+      northern_lights_text_color: '✨', thanksgiving_text_color: '🦃'
+    };
+    const state = { calendar: null, profile: null, shop: [], user: null, selectedDay: 1, authMode: 'login', app: 'advent' };
+    const $ = (selector) => document.querySelector(selector);
+    const status = (message) => { $('#status').textContent = message; };
+    const APP_VIEWS = {
+      advent: {
+        panel: 'calendar',
+        title: 'Advent Calendar',
+        eyebrow: 'DECEMBER 1–25, 2026',
+        description: 'Open a new door each day, collect gifts, and make the holidays your own. Future gifts are here to preview, but they stay locked until their day.'
+      },
+      fishing: {
+        panel: 'fishing',
+        title: 'Holiday fishing',
+        eyebrow: 'A FESTIVE CATCH EVERY THREE SECONDS',
+        description: 'Cast a line for seasonal collectibles and add each catch to your profile.'
+      },
+      shop: {
+        panel: 'shop',
+        title: 'Holiday shop',
+        eyebrow: 'SPEND YOUR SEASONAL CURRENCIES',
+        description: 'Trade Candy Canes, Gummy Bears, and Gingerbread for limited profile collectibles.'
+      },
+      colors: {
+        panel: 'colors',
+        title: 'Text Color Fishing',
+        eyebrow: 'FESTIVE COLORS FOR YOUR PROFILE',
+        description: 'Fish for a username style, then equip one to show it beside your profile name across Hoilday.'
+      },
+      tree: {
+        panel: 'tree',
+        title: 'Christmas Tree',
+        eyebrow: 'BUILD YOUR OWN TREE ROOM',
+        description: 'Fish for lights and strands, decorate your tree, and visit other members’ tree rooms.'
+      }
+    };
+
+    function configureAppView() {
+      const requestedApp = new URLSearchParams(location.search).get('app') || 'advent';
+      const app = APP_VIEWS[requestedApp] || APP_VIEWS.advent;
+      state.app = APP_VIEWS[requestedApp] ? requestedApp : 'advent';
+      document.querySelectorAll('[data-app-link]').forEach((link) => {
+        if (link.dataset.appLink === state.app) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
+      });
+      document.body.classList.add('single-app');
+      document.querySelector('.tabs').hidden = true;
+      document.querySelectorAll('[data-panel]').forEach((panel) => {
+        panel.hidden = panel.dataset.panel !== app.panel;
+      });
+      $('.hero h1').textContent = app.title;
+      $('.hero .eyebrow').textContent = app.eyebrow;
+      $('#appDescription').textContent = app.description;
+      document.title = `${app.title} · Hoilday`;
+    }
+
+    async function request(path, options = {}) {
+      const token = localStorage.getItem(TOKEN_KEY);
+      const response = await fetch(`/api${path}`, {
+        ...options,
+        headers: {
+          ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...options.headers
+        },
+        body: options.body ? JSON.stringify(options.body) : options.body
+      });
+      let result;
+      try { result = await response.json(); }
+      catch { throw new Error('The server returned an invalid response.'); }
+      if (!response.ok) {
+        const error = new Error(result.error || `Request failed (${response.status}).`);
+        error.status = response.status;
+        throw error;
+      }
+      return result;
+    }
+
+    function setUser(user) {
+      state.user = user || null;
+      if (user?.holiday) state.profile = user.holiday;
+      $('#accountButton').textContent = user ? `Sign out · ${user.username}` : 'Sign in';
+      $('#authBox').hidden = Boolean(user);
+      updateTabs();
+      renderColors();
+    }
+
+    function currencyChips(target, profile) {
+      target.replaceChildren();
+      for (const [icon, key, label] of [
+        ['🍬', 'candy_canes', 'Candy Canes'],
+        ['🐻', 'gummy_bears', 'Gummy Bears'],
+        ['🍪', 'gingerbread_men', 'Gingerbread']
+      ]) {
+        const chip = document.createElement('span');
+        chip.className = 'currency';
+        chip.textContent = `${icon} ${profile?.[key] ?? 0} ${label}`;
+        target.append(chip);
+      }
+    }
+
+    function renderHolidayOdds() {
+      const unlocked = new Set(state.profile?.apps_unlocked || []);
+      const colorsUnlocked = unlocked.has('text_color_fishing');
+      const entries = [
+        ['🍬 Candy Cane', colorsUnlocked ? '60%' : '60.05%'],
+        ['🐻 Gummy Bear', colorsUnlocked ? '30%' : '29.95%'],
+        ['🍪 Gingerbread', '7.5%'],
+        ['💍 Snow ring', '2%'],
+        ['🏅 Snow Pup rank', '0.3%'],
+        ['☃️ Snowman emoji', '0.15%'],
+        ...(colorsUnlocked
+          ? [['— No bonus catch', '0.05%']]
+          : [['🎁 Present text color', '0.05%']])
+      ];
+      const odds = $('#holidayOdds');
+      odds.replaceChildren(...entries.map(([name, chance]) => {
+        const chip = document.createElement('span');
+        chip.textContent = `${name} · ${chance}`;
+        return chip;
+      }));
+      $('#holidayOddsNote').textContent = colorsUnlocked
+        ? 'After Text Color Fishing unlocks, the Present color catch becomes a 0.05% no-bonus catch. The listed odds total exactly 100%.'
+        : 'Before Text Color Fishing unlocks, the Present color chance is 0.05%. The listed odds total exactly 100%.';
+    }
+
+    function selectedReward() {
+      return state.calendar?.days.find((day) => day.day === state.selectedDay);
+    }
+
+    function renderCalendar() {
+      const calendar = state.calendar;
+      if (!calendar) return;
+      state.profile = calendar.profile || state.profile;
+      currencyChips($('#currencyRow'), state.profile);
+      const grid = $('#calendarGrid');
+      grid.replaceChildren();
+      for (const day of calendar.days) {
+        const card = document.createElement('button');
+        const future = day.day > Number(calendar.today.slice(-2)) ||
+          Number(calendar.today.slice(5, 7)) < 12 ||
+          Number(calendar.today.slice(0, 4)) < calendar.year;
+        card.type = 'button';
+        card.className = `day-card${day.claimable ? ' is-claimable' : ''}${day.claimed ? ' is-claimed' : ''}${future ? ' is-future' : ''}`;
+        card.setAttribute('aria-pressed', String(day.day === state.selectedDay));
+        const number = document.createElement('span');
+        number.className = 'day-number';
+        number.textContent = String(day.day).padStart(2, '0');
+        const icon = document.createElement('span');
+        icon.className = 'day-icon';
+        icon.textContent = day.icon;
+        const box = document.createElement('span');
+        box.className = 'day-state';
+        box.textContent = day.claimed ? 'Claimed' : day.claimable ? 'Claim today' : future ? 'Opens Dec ' + day.day : 'Closed';
+        card.append(number, icon, box);
+        card.addEventListener('click', () => {
+          state.selectedDay = day.day;
+          renderCalendar();
+        });
+        grid.append(card);
+      }
+      const day = selectedReward();
+      if (!day) return;
+      $('#detailTitle').textContent = `December ${day.day} · ${day.title}`;
+      $('#detailDescription').textContent = day.description;
+      const claimButton = $('#claimButton');
+      claimButton.disabled = !day.claimable;
+      claimButton.textContent = day.claimed ? 'Already claimed' :
+        day.claimable ? 'Claim today’s gift' : state.user ? `Opens December ${day.day}` : 'Sign in to claim';
+      if (day.claimable) claimButton.dataset.claimDay = String(day.day);
+      else delete claimButton.dataset.claimDay;
+    }
+
+    function renderShop() {
+      const profile = state.profile;
+      if (!profile) return;
+      currencyChips($('#shopCurrencies'), profile);
+      $('#holidayStats').textContent =
+        `Days claimed: ${(profile.advent_claimed_days || []).length}/25 · Holiday fish caught: ${profile.holiday_fish_caught || 0} · Collection items: ${Object.keys(profile.items || {}).length}`;
+      const grid = $('#shopGrid');
+      grid.replaceChildren();
+      for (const item of state.shop) {
+        const card = document.createElement('article');
+        card.className = 'shop-item';
+        const title = document.createElement('h3');
+        title.textContent = item.name;
+        const price = document.createElement('p');
+        price.textContent = `${item.price} ${item.currency.replaceAll('_', ' ')}`;
+        const description = document.createElement('p');
+        description.textContent = ({
+          gummy_bear_rank: 'An Epic Gummy Bear rank for your profile.',
+          candy_cane_ring: 'A Candy Cane profile ring.',
+          gingerbread_token: 'Use it any time to bring Christmas Weather for five minutes.',
+          gummy_text_color: 'Lime and pink letters with a gummy bear above each one.',
+          candy_cane_rank: 'An Epic Candy Cane profile rank.'
+        })[item.id] || 'A limited Holiday collectible.';
+        const button = document.createElement('button');
+        button.className = 'button';
+        button.type = 'button';
+        const owned = item.id === 'gummy_bear_rank'
+          ? (state.user?.unlocked_ranks || []).includes('Gummy Bear')
+          : item.id === 'candy_cane_ring'
+            ? (state.user?.unlocked_rings || []).includes('candy_cane')
+            : item.id === 'candy_cane_rank'
+              ? (state.user?.unlocked_ranks || []).includes('Candy Cane')
+              : item.id === 'gummy_text_color'
+                ? (profile.items || {}).gummy_text_color > 0
+                : item.id === 'gingerbread_token' && (profile.items || {}).gingerbread_token > 0;
+        button.textContent = owned ? 'Owned' : item.available ? 'Buy' : 'Unlocks on day 10';
+        button.disabled = owned || !item.available;
+        button.addEventListener('click', () => buyItem(item.id, button));
+        card.append(title, price, description, button);
+        grid.append(card);
+      }
+      const tokenCount = profile.gingerbread_tokens || 0;
+      $('#tokenCard').replaceChildren();
+      const tokenTitle = document.createElement('h3');
+      tokenTitle.textContent = `Gingerbread weather tokens · ${tokenCount}`;
+      const tokenCopy = document.createElement('p');
+      tokenCopy.className = 'muted';
+      tokenCopy.textContent = 'Tokens stay in your profile until you choose to use one.';
+      const tokenButton = document.createElement('button');
+      tokenButton.className = 'button';
+      tokenButton.type = 'button';
+      tokenButton.textContent = 'Use a token · 5 minutes';
+      tokenButton.disabled = tokenCount < 1;
+      tokenButton.addEventListener('click', async () => {
+        tokenButton.disabled = true;
+        try {
+          const result = await request('/holiday/weather', { method: 'POST', body: {} });
+          state.user = { ...state.user, ...result.profile };
+          state.profile = result.profile.holiday;
+          renderShop();
+          $('#shopStatus').textContent = 'Christmas Weather is on for five minutes.';
+        } catch (error) {
+          $('#shopStatus').textContent = `Weather token could not be used: ${error.message}`;
+          tokenButton.disabled = false;
+        }
+      });
+      $('#tokenCard').append(tokenTitle, tokenCopy, tokenButton);
+      const collection = $('#holidayCollection');
+      collection.replaceChildren();
+      const labels = {
+        present_text_color: 'Present text color', candy_cane_text_color: 'Candy Cane text color',
+        winter_text_color: 'Limited Winter text color', gummy_text_color: 'Gummy text color',
+        red_text_color: 'Red text color', white_text_color: 'White text color',
+        gold_text_color: 'Gold text color', reindeer_text_color: 'Reindeer text color',
+        christmas_text_color: 'Christmas text color', northern_lights_text_color: 'Northern Lights text color',
+        snow_globe: 'Limited Snow Globe keepsake', sleigh_bells: 'Christmas Eve Sleigh Bells',
+        limited_tree_strand: 'Limited Christmas tree strand', emoji_tree_strand: 'Emoji tree strand',
+        advent_background: 'Legendary Advent home-screen background'
+      };
+      for (const [itemId, quantity] of Object.entries(profile.items || {})) {
+        if (itemId === 'gingerbread_token' || quantity < 1) continue;
+        const item = document.createElement('article');
+        item.className = 'feature-card';
+        const title = document.createElement('strong');
+        title.textContent = labels[itemId] || itemId.replaceAll('_', ' ');
+        const count = document.createElement('p');
+        count.className = 'muted';
+        count.textContent = `Collected · ${quantity}`;
+        item.append(title, count);
+        collection.append(item);
+      }
+      const ownedLabels = [
+        ...(state.user?.unlocked_ranks || [])
+          .filter((name) => ['Gummy Bear', 'Candy Cane', 'Snow Pup', 'Winter Guardian', "Santa's Favorite"].includes(name))
+          .map((name) => `${name} rank`),
+        ...(state.user?.unlocked_rings || [])
+          .filter((name) => ['snow', 'north_star'].includes(name))
+          .map((name) => `${name === 'north_star' ? 'North Star' : 'Snow'} profile ring`)
+      ];
+      for (const label of ownedLabels) {
+        const item = document.createElement('article');
+        item.className = 'feature-card';
+        item.textContent = label;
+        collection.append(item);
+      }
+      if (!collection.childElementCount) {
+        const empty = document.createElement('p');
+        empty.className = 'muted';
+        empty.textContent = 'Your special Advent and Holiday collectibles will appear here.';
+        collection.append(empty);
+      }
+    }
+
+    async function buyItem(itemId, button) {
+      button.disabled = true;
+      $('#shopStatus').textContent = '';
+      try {
+        const result = await request('/holiday/shop/buy', { method: 'POST', body: { item_id: itemId } });
+        state.profile = result.profile.holiday;
+        state.user = { ...state.user, ...result.profile };
+        renderShop();
+        renderCalendar();
+        $('#shopStatus').textContent = 'Purchase complete.';
+      } catch (error) {
+        $('#shopStatus').textContent = `Purchase failed: ${error.message}`;
+        button.disabled = false;
+      }
+    }
+
+    function styledName(name, colorId) {
+      const element = document.createElement('span');
+      element.className = 'styled-name';
+      const colorClass = COLOR_CLASSES[colorId];
+      if (!colorClass) {
+        element.textContent = name;
+        return element;
+      }
+      const decoration = DECORATIONS[colorId];
+      for (const [index, letter] of [...name].entries()) {
+        const span = document.createElement('span');
+        span.className = `color-${colorClass}${decoration ? ' decorated' : ''}`;
+        span.textContent = letter === ' ' ? '\u00a0' : letter;
+        if (decoration) span.dataset.decoration = decoration;
+        if (colorId === 'reindeer_text_color') span.style.color = index % 2 ? '#f3bd46' : '#f35c5c';
+        if (colorId === 'christmas_text_color') span.style.color = index % 2 ? '#47d878' : '#f4535e';
+        if (colorId === 'present_text_color') span.style.color = index % 2 ? '#f3bd46' : '#f4535e';
+        if (colorId === 'gummy_text_color') span.style.color = index % 2 ? '#ff82bc' : '#a9ec5c';
+        if (colorId === 'thanksgiving_text_color') span.style.color = ['#d7783f', '#8d9f45', '#b64d3b'][index % 3];
+        element.append(span);
+      }
+      return element;
+    }
+
+    function renderColors() {
+      const colors = state.profile?.unlocked_text_colors || [];
+      const name = state.user?.username || 'Guest';
+      $('#namePreview').replaceWith(styledName(name, state.profile?.equipped_text_color));
+      const preview = document.querySelector('.profile-preview .styled-name');
+      preview.id = 'namePreview';
+      const grid = $('#colorGrid');
+      grid.replaceChildren();
+      for (const colorId of colors) {
+        const card = document.createElement('article');
+        card.className = 'color-card';
+        const title = document.createElement('h3');
+        title.textContent = COLOR_NAMES[colorId] || colorId;
+        const sample = styledName(name, colorId);
+        const button = document.createElement('button');
+        button.className = 'button';
+        button.type = 'button';
+        button.textContent = state.profile?.equipped_text_color === colorId ? 'Equipped' : 'Equip';
+        button.disabled = !state.user || state.profile?.equipped_text_color === colorId;
+        button.addEventListener('click', async () => {
+          button.disabled = true;
+          try {
+            const result = await request('/profile/text-color', {
+              method: 'PUT', body: { color_id: colorId }
+            });
+            state.user = result.user;
+            state.profile = result.user.holiday;
+            renderColors();
+          } catch (error) {
+            $('#colorResult').textContent = `Text color could not be equipped: ${error.message}`;
+            button.disabled = false;
+          }
+        });
+        card.append(title, sample, button);
+        grid.append(card);
+      }
+    }
+
+    function treeBulbs(count) {
+      const palettes = {
+        classic: ['#fa5966', '#ffd447', '#54dfff', '#88e878', '#d68aff'],
+        icy: ['#c9f8ff', '#72d8ff', '#ffffff', '#82a8ff', '#b7f1ff'],
+        candy: ['#ff4d5b', '#ffffff', '#58d987', '#ffffff', '#ff4d5b'],
+        rainbow: ['#ff5c70', '#ffb84d', '#f8ed69', '#58df87', '#64baff', '#a67cff']
+      };
+      const colors = palettes[$('#bulbPalette')?.value || 'classic'] || palettes.classic;
+      const bulbs = $('#treeBulbs');
+      bulbs.replaceChildren();
+      for (let index = 0; index < Math.min(count, 36); index += 1) {
+        const bulb = document.createElement('i');
+        bulb.className = 'bulb';
+        bulb.style.left = `${15 + ((index * 37) % 70)}%`;
+        bulb.style.top = `${8 + ((index * 29) % 82)}%`;
+        bulb.style.setProperty('--bulb', colors[index % colors.length]);
+        bulbs.append(bulb);
+      }
+    }
+
+    function showTreeRoom(title, lights, strands) {
+      $('#treeRoomTitle').textContent = title;
+      $('#returnToMyTree').hidden = title === 'Your Christmas tree room';
+      treeBulbs(lights);
+      $('.strand-one').style.display = strands > 0 ? '' : 'none';
+      $('.strand-two').style.display = strands > 1 ? '' : 'none';
+      $('#treeFishButton').disabled = title !== 'Your Christmas tree room' || !state.user;
+    }
+
+    async function loadTours() {
+      const tours = await request('/holiday/trees');
+      const grid = $('#tourGrid');
+      grid.replaceChildren();
+      if (!tours.length) {
+        const empty = document.createElement('p');
+        empty.className = 'muted';
+        empty.textContent = 'No tree rooms have opened yet.';
+        grid.append(empty);
+        return;
+      }
+      for (const tree of tours) {
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'tour-card';
+        const name = styledName(tree.username, tree.equipped_text_color);
+        const details = document.createElement('p');
+        details.className = 'muted';
+        details.textContent = `✨ ${tree.tree_lights} lights · 🎀 ${tree.tree_strands} strands`;
+        card.append(name, details);
+        card.addEventListener('click', () => {
+          showTreeRoom(`${tree.username}’s tree room`, tree.tree_lights, tree.tree_strands);
+          $('#treeInventory').textContent = `${tree.username} has welcomed you into their room.`;
+        });
+        grid.append(card);
+      }
+    }
+
+    function updateSeasonCountdown() {
+      if (state.app !== 'advent') return;
+      const now = new Date();
+      let target;
+      if (now.getUTCMonth() === 11 && now.getUTCFullYear() === 2026) {
+        if (now.getUTCDate() < 25) {
+          target = new Date(Date.UTC(2026, 11, now.getUTCDate() + 1));
+        } else {
+          target = new Date(Date.UTC(2026, 11, 26));
+        }
+      } else {
+        target = new Date(Date.UTC(2026, 11, 1));
+      }
+      const milliseconds = Math.max(0, target.getTime() - now.getTime());
+      const days = Math.floor(milliseconds / 86400000);
+      const hours = Math.floor((milliseconds % 86400000) / 3600000);
+      const minutes = Math.floor((milliseconds % 3600000) / 60000);
+      const seconds = Math.floor((milliseconds % 60000) / 1000);
+      const label = now.getUTCFullYear() === 2026 && now.getUTCMonth() === 11 && now.getUTCDate() <= 25
+        ? `Next Advent door: ${days}d ${hours}h ${minutes}m ${seconds}s`
+        : now > target
+          ? 'The 2026 Advent season has ended.'
+          : `Advent begins in ${days}d ${hours}h ${minutes}m ${seconds}s`;
+      status(label);
+    }
+
+    async function refresh() {
+      try {
+        const result = await request('/advent');
+        state.calendar = result;
+        if (result.profile) state.profile = result.profile;
+        renderCalendar();
+        renderHolidayOdds();
+        if (state.user) {
+          const holiday = await request('/holiday');
+          state.profile = holiday.profile;
+          state.shop = holiday.shop;
+          state.user.holiday = holiday.profile;
+          renderCalendar();
+          renderShop();
+          renderColors();
+          await loadTours();
+          showTreeRoom('Your Christmas tree room', state.profile.tree_lights, state.profile.tree_strands);
+          $('#treeInventory').textContent =
+            `Your tree has ${state.profile.tree_lights} lights and ${state.profile.tree_strands} strands, including ${state.profile.items.limited_tree_strand || 0} limited strand(s).`;
+        }
+        updateTabs();
+        if (state.app === 'advent') {
+          updateSeasonCountdown();
+        } else {
+          status(state.user
+            ? `Welcome, ${state.user.username}. Your progress is saved to your account.`
+            : 'Sign in to save progress and use this seasonal app.');
+        }
+      } catch (error) {
+        status(`The Advent Calendar could not load: ${error.message}`);
+      }
+    }
+
+    function updateTabs() {
+      const apps = new Set(state.profile?.apps_unlocked || []);
+      for (const [tab, app] of [
+        ['fishing', 'holiday_fishing'], ['shop', 'holiday_shop'],
+        ['colors', 'text_color_fishing'], ['tree', 'christmas_tree']
+      ]) {
+        $(`.tab[data-tab="${tab}"]`).disabled = !state.user || !apps.has(app);
+      }
+      $('#fishButton').disabled = !state.user || !apps.has('holiday_fishing');
+      $('#colorFishButton').disabled = !state.user || !apps.has('text_color_fishing');
+      $('#treeFishButton').disabled = !state.user || !apps.has('christmas_tree');
+    }
+
+    async function claimReward() {
+      const day = Number($('#claimButton').dataset.claimDay);
+      if (!day) return;
+      $('#claimButton').disabled = true;
+      try {
+        const result = await request('/advent/claim', { method: 'POST', body: { day } });
+        state.user = { ...state.user, ...result.profile };
+        state.profile = result.profile.holiday;
+        state.selectedDay = day;
+        status(`Day ${day} claimed: ${result.title}!`);
+        await refresh();
+      } catch (error) {
+        status(`Reward could not be claimed: ${error.message}`);
+        await refresh();
+      }
+    }
+
+    async function fish(path, resultElement, button, format) {
+      button.disabled = true;
+      const originalText = button.textContent;
+      resultElement.textContent = 'Casting…';
+      try {
+        const result = await request(path, { method: 'POST', body: {} });
+        state.profile = result.profile.holiday;
+        state.user = { ...state.user, ...result.profile };
+        resultElement.textContent = format(result);
+        renderShop();
+        renderColors();
+        renderCalendar();
+        showTreeRoom('Your Christmas tree room', state.profile.tree_lights, state.profile.tree_strands);
+        if (path === '/holiday/tree/fish') $('#treeInventory').textContent =
+          `Your tree has ${state.profile.tree_lights} lights and ${state.profile.tree_strands} strands, including ${state.profile.items.limited_tree_strand || 0} limited strand(s).`;
+      } catch (error) {
+        resultElement.textContent = `Fishing failed: ${error.message}`;
+      } finally {
+        let remaining = 3;
+        const cooldown = window.setInterval(() => {
+          remaining -= 1;
+          button.textContent = remaining > 0 ? `Ready in ${remaining}s` : originalText;
+          if (remaining < 1) {
+            window.clearInterval(cooldown);
+            button.disabled = false;
+          }
+        }, 1000);
+      }
+    }
+
+    async function authenticate(event) {
+      event.preventDefault();
+      const action = state.authMode === 'login' ? 'login' : 'register';
+      $('#authSubmit').disabled = true;
+      try {
+        const result = await request(`/auth/${action}`, {
+          method: 'POST',
+          body: { username: $('#username').value, password: $('#password').value }
+        });
+        localStorage.setItem(TOKEN_KEY, result.token);
+        setUser(result.user);
+        $('#password').value = '';
+        await refresh();
+      } catch (error) {
+        $('#authMessage').textContent = error.message;
+      } finally {
+        $('#authSubmit').disabled = false;
+      }
+    }
+
+    document.querySelectorAll('.tab[data-tab]').forEach((tab) => tab.addEventListener('click', () => {
+      if (tab.disabled) return;
+      document.querySelectorAll('.tab[data-tab]').forEach((item) => item.setAttribute('aria-selected', String(item === tab)));
+      document.querySelectorAll('[data-panel]').forEach((panel) => { panel.hidden = panel.dataset.panel !== tab.dataset.tab; });
+    }));
+    $('#claimButton').addEventListener('click', () => {
+      if (!state.user) {
+        $('#authBox').hidden = false;
+        $('#username').focus();
+        status('Sign in or create an account before claiming a reward.');
+        return;
+      }
+      void claimReward();
+    });
+    $('#fishButton').addEventListener('click', () => fish('/holiday/fish', $('#fishResult'), $('#fishButton'), (result) =>
+      result.caught === 'no_reward'
+        ? 'The line came back empty—no bonus this time.'
+        : `You caught ${result.caught.replaceAll('_', ' ')}${result.newly_unlocked ? ' for the first time!' : ' again.'}`));
+    $('#colorFishButton').addEventListener('click', () => fish('/holiday/text-color-fish', $('#colorResult'), $('#colorFishButton'), (result) =>
+      `${result.newly_unlocked ? 'New color: ' : 'Already collected: '}${COLOR_NAMES[result.caught] || result.caught}.`));
+    $('#treeFishButton').addEventListener('click', () => fish('/holiday/tree/fish', $('#treeResult'), $('#treeFishButton'), (result) =>
+      `You found ${result.caught === 'tree_lights' ? 'a set of tree lights' : 'an emoji tree strand'}!`));
+    $('#returnToMyTree').addEventListener('click', () => {
+      showTreeRoom('Your Christmas tree room', state.profile.tree_lights, state.profile.tree_strands);
+      $('#treeInventory').textContent =
+        `Your tree has ${state.profile.tree_lights} lights and ${state.profile.tree_strands} strands, including ${state.profile.items.limited_tree_strand || 0} limited strand(s).`;
+    });
+    $('#bulbPalette').addEventListener('change', () => {
+      treeBulbs(state.profile?.tree_lights || 0);
+    });
+    $('#authForm').addEventListener('submit', authenticate);
+    $('#collectionSearch').addEventListener('input', (event) => {
+      const query = event.target.value.trim().toLowerCase();
+      $('#holidayCollection').querySelectorAll('.feature-card').forEach((card) => {
+        card.hidden = Boolean(query) && !card.textContent.toLowerCase().includes(query);
+      });
+    });
+    $('#authMode').addEventListener('click', () => {
+      state.authMode = state.authMode === 'login' ? 'register' : 'login';
+      $('#authSubmit').textContent = state.authMode === 'login' ? 'Sign in' : 'Create account';
+      $('#authMode').textContent = state.authMode === 'login' ? 'Create an account' : 'I already have an account';
+      $('#password').autocomplete = state.authMode === 'login' ? 'current-password' : 'new-password';
+    });
+    $('#accountButton').addEventListener('click', async () => {
+      if (!state.user) {
+        $('#authBox').hidden = false;
+        $('#username').focus();
+        return;
+      }
+      try {
+        await request('/auth/logout', { method: 'POST', body: {} });
+        localStorage.removeItem(TOKEN_KEY);
+        setUser(null);
+        state.profile = null;
+        state.shop = [];
+        await refresh();
+      } catch (error) {
+        status(`Sign out failed: ${error.message}`);
+      }
+    });
+    $('#authBox').hidden = Boolean(localStorage.getItem(TOKEN_KEY));
+
+    async function start() {
+      configureAppView();
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (token) {
+        try {
+          const { user } = await request('/auth/me');
+          setUser(user);
+        } catch {
+          localStorage.removeItem(TOKEN_KEY);
+          setUser(null);
+        }
+      } else setUser(null);
+      await refresh();
+      window.setInterval(() => {
+        if (state.app === 'advent') updateSeasonCountdown();
+      }, 1000);
+    }
+    void start();
+  </script>
+</body>
+</html>
