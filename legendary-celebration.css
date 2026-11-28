@@ -1,0 +1,76 @@
+.legendary-celebration {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 24px;
+  border: 0;
+  color: #fff;
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(255, 222, 130, .25), transparent 40%),
+    linear-gradient(145deg, rgba(20, 28, 62, .98), rgba(61, 26, 85, .98));
+  text-align: center;
+}
+
+.legendary-celebration:not([open]) { display: none; }
+.legendary-celebration[open] { animation: legendary-backdrop-in .25s ease-out both; }
+.legendary-celebration::backdrop { background: rgba(3, 5, 15, .84); backdrop-filter: blur(7px); }
+.legendary-celebration-sparkles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.legendary-celebration-sparkles span {
+  position: absolute;
+  top: var(--sparkle-top, 15%);
+  left: var(--sparkle-left);
+  color: #fff2a1;
+  font-size: clamp(14px, 3vw, 29px);
+  text-shadow: 0 0 10px #ffe46e, 0 0 23px #ff8bea;
+  animation: legendary-sparkle 1.5s ease-in-out var(--sparkle-delay) infinite alternate;
+}
+.legendary-celebration-sparkles span:nth-child(3n) { --sparkle-top: 72%; }
+.legendary-celebration-sparkles span:nth-child(3n + 1) { --sparkle-top: 34%; }
+.legendary-celebration-icon {
+  position: absolute;
+  z-index: 1;
+  top: 22%;
+  left: 50%;
+  font-size: clamp(76px, 18vw, 150px);
+  filter: drop-shadow(0 0 18px rgba(255, 227, 124, .95));
+  transform: translate(-50%, -130vh) rotate(-210deg) scale(.45);
+  animation: legendary-fall 1.15s cubic-bezier(.15, .83, .23, 1.2) .08s forwards;
+}
+.legendary-celebration-card {
+  z-index: 2;
+  width: min(460px, 100%);
+  margin-top: 16vh;
+  padding: 25px 24px 21px;
+  border: 1px solid rgba(255, 228, 143, .66);
+  border-radius: 22px;
+  background: linear-gradient(145deg, rgba(47, 42, 84, .93), rgba(35, 29, 68, .96));
+  box-shadow: 0 0 25px rgba(255, 207, 87, .35), 0 0 75px rgba(191, 118, 255, .24);
+  animation: legendary-card-in .45s cubic-bezier(.2, .8, .2, 1.25) .55s both;
+}
+.legendary-celebration-eyebrow { margin: 0 0 8px; color: #ffe487; font-size: 11px; font-weight: 850; letter-spacing: 2.2px; }
+.legendary-celebration-card h2 { margin: 0; color: #fff; font: 850 clamp(25px, 7vw, 39px)/1.1 'Manrope', sans-serif; text-shadow: 0 0 17px rgba(255, 233, 140, .75); }
+.legendary-celebration-card p:not(.legendary-celebration-eyebrow) { margin: 12px 0 18px; color: #ded8f5; font-size: 13px; }
+.legendary-celebration-continue { min-height: 38px; padding: 0 22px; border: 1px solid #ffe487; border-radius: 999px; color: #211a35; background: linear-gradient(100deg, #ffe487, #ffca78); font: 750 12px 'Manrope', sans-serif; cursor: pointer; }
+.legendary-celebration-continue:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+@keyframes legendary-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes legendary-fall {
+  0% { transform: translate(-50%, -130vh) rotate(-210deg) scale(.45); }
+  72% { transform: translate(-50%, 8vh) rotate(24deg) scale(1.13); }
+  86% { transform: translate(-50%, -2vh) rotate(-8deg) scale(.98); }
+  100% { transform: translate(-50%, 0) rotate(0) scale(1); }
+}
+@keyframes legendary-card-in { from { opacity: 0; transform: translateY(28px) scale(.86); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes legendary-sparkle { from { opacity: .2; transform: translateY(12px) rotate(0) scale(.65); } to { opacity: 1; transform: translateY(-18px) rotate(35deg) scale(1.25); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .legendary-celebration[open], .legendary-celebration-icon, .legendary-celebration-card,
+  .legendary-celebration-sparkles span { animation: none; }
+  .legendary-celebration-icon { transform: translate(-50%, 0); }
+}

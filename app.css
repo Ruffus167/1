@@ -320,6 +320,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .holiday-name-reindeer .holiday-name-letter:nth-child(even), .holiday-name-present .holiday-name-letter:nth-child(even) { color: #ffd667 !important; }
 .holiday-name-christmas .holiday-name-letter:nth-child(odd) { color: #ff626b !important; }
 .holiday-name-christmas .holiday-name-letter:nth-child(even) { color: #57df87 !important; }
+.holiday-name-base_christmas .holiday-name-letter:nth-child(odd) { color: #ff626b !important; }
+.holiday-name-base_christmas .holiday-name-letter:nth-child(even) { color: #57df87 !important; }
 .holiday-name-gummy .holiday-name-letter:nth-child(even) { color: #ff82bc !important; }
 .holiday-name-thanksgiving .holiday-name-letter:nth-child(odd) { color: #d7783f !important; }
 .holiday-name-thanksgiving .holiday-name-letter:nth-child(even) { color: #8d9f45 !important; }
@@ -719,6 +721,10 @@ h1 {
 .profile-heading { display: flex; align-items: center; gap: 15px; }
 .profile-heading .profile-avatar { width: 54px; height: 54px; font-size: 18px; }
 .profile-heading p { margin: 5px 0 0; color: #bdc9d4; font-size: 11px; }
+.profile-score { display: grid; justify-items: center; gap: 5px; padding: 22px 16px; border: 1px solid rgba(255, 227, 107, .32); border-radius: 14px; background: radial-gradient(ellipse at top, rgba(255, 227, 107, .17), rgba(255,255,255,.025) 72%); text-align: center; }
+.profile-score > span { color: #ffe48e; font-size: 10px; font-weight: 750; letter-spacing: 2px; }
+.profile-score > strong { color: #fff6cf; font: 800 clamp(42px, 8vw, 68px)/1 'Manrope', sans-serif; letter-spacing: -2px; text-shadow: 0 0 26px rgba(255, 216, 92, .3); }
+.profile-score > p { margin: 3px 0 0; color: #bdc9d4; font-size: 10px; }
 .profile-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .profile-stat { display: grid; gap: 5px; padding: 15px; border: 1px solid rgba(213, 233, 255, .12); border-radius: 10px; background: rgba(255,255,255,.035); }
 .profile-stat span { color: #afc4d2; font-size: 9px; letter-spacing: 1px; }
@@ -1503,6 +1509,7 @@ body[data-theme] .home-app-topps {
 .home-app-export { --app-icon-top: #69d7cb; --app-icon-bottom: #2e9c95; }
 .home-app-updates { --app-icon-top: #90b8ff; --app-icon-bottom: #536cd1; }
 .home-app-notifications { --app-icon-top: #ff91a3; --app-icon-bottom: #d44662; }
+.home-app-geometry { --app-icon-top: #78f36e; --app-icon-bottom: #168d53; }
 .home-app-appearance { --app-icon-top: #8ec5fc; --app-icon-bottom: #7064d8; }
 .home-app-trading { --app-icon-top: #ffd487; --app-icon-bottom: #e88750; }
 .home-app-christmas { --app-icon-top: #64d9a1; --app-icon-bottom: #15714f; }

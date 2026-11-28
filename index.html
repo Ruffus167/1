@@ -10,6 +10,8 @@
     />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./autoclicker.css" />
+    <link rel="stylesheet" href="./legendary-celebration.css" />
     <title>Hoilday — your apps</title>
     <script id="appManifest" type="application/json">
       {
@@ -177,6 +179,12 @@
             </button>
             <button class="home-app" type="button" data-app-id="topps" data-page="topps" data-app-url="./topps.html" aria-label="Open Topps">
               <span class="home-app-icon home-app-topps" aria-hidden="true">TOPPS</span><span class="home-app-label">Topps</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="geometry-dash" data-page="geometry-dash" data-app-url="./geometry.html" aria-label="Open Geometry Dash">
+              <span class="home-app-icon home-app-geometry" aria-hidden="true">🟩</span><span class="home-app-label">Geometry Dash</span>
+            </button>
+            <button class="home-app" type="button" data-app-id="auto-clicker" data-page="auto-clicker" data-app-url="./autoclicker.html" aria-label="Open Auto Clicker">
+              <span class="home-app-icon" aria-hidden="true">🖱️</span><span class="home-app-label">Auto Clicker</span>
             </button>
             <button class="home-app" type="button" data-app-id="advent-calendar" data-page="advent-calendar" data-app-url="./christmas.html?app=advent" aria-label="Open Advent Calendar" hidden>
               <span class="home-app-icon home-app-advent" aria-hidden="true">📅</span><span class="home-app-label">Advent Calendar</span>
@@ -505,7 +513,7 @@
               <button class="primary-button catch-button" id="catchFishButton" type="button">Cast your line <span aria-hidden="true">↗</span></button>
               <p class="catch-status" id="catchStatus" role="status" aria-live="polite">Sign in to start fishing and save your rank.</p>
               <div class="rank-list" aria-label="Fishing ranks and catch odds">
-                <div class="rank-chip rank-snow"><strong>Snow</strong><small>61.1%</small><span class="rank-rarity rarity-common">Common</span></div>
+                <div class="rank-chip rank-snow"><strong>Snow</strong><small data-christmas-snow-odds>61.1%</small><span class="rank-rarity rarity-common">Common</span></div>
                 <div class="rank-chip rank-present"><strong>Present</strong><small>19.5%</small><span class="rank-rarity rarity-uncommon">Uncommon</span></div>
                 <div class="rank-chip rank-peppermint"><strong>Peppermint</strong><small>9.2%</small><span class="rank-rarity rarity-rare">Rare</span></div>
                 <div class="rank-chip rank-fall" data-seasonal-rank="fall"><strong>Fall</strong><small>5% chance</small><span class="rank-rarity rarity-rare">Rare</span></div>
@@ -514,13 +522,14 @@
                 <div class="rank-chip rank-cameron"><strong>Cameron</strong><small>0.2% chance</small><span class="rank-rarity rarity-legendary">Legendary</span></div>
                 <div class="rank-chip rank-holiday"><strong>Holiday</strong><small>0.1% chance</small><span class="rank-rarity rarity-legendary">Legendary</span></div>
                 <div class="rank-chip rank-snowball"><strong>Snowball</strong><small>0.01% chance</small><span class="rank-rarity rarity-legendary">Legendary</span></div>
+                <div class="rank-chip" data-seasonal-color hidden><strong>Christmas text color</strong><small>0.5% chance</small><span class="rank-rarity rarity-epic">Epic</span></div>
               </div>
             </section>
             <section class="seasonal-card" id="ranksPanel" role="tabpanel" aria-labelledby="ranksTab" hidden>
               <h2>Rank collection</h2>
               <p class="welcome-subtitle">Collect fishing and quest ranks, then choose which one to show on your profile.</p>
               <div class="rank-list" aria-label="All available ranks">
-                <div class="rank-chip rank-snow"><strong>Snow</strong><small>Fishing · 61.1%</small><span class="rank-rarity rarity-common">Common</span></div>
+                <div class="rank-chip rank-snow"><strong>Snow</strong><small data-christmas-snow-odds="rank">Fishing · 61.1%</small><span class="rank-rarity rarity-common">Common</span></div>
                 <div class="rank-chip rank-present"><strong>Present</strong><small>Fishing · 19.5%</small><span class="rank-rarity rarity-uncommon">Uncommon</span></div>
                 <div class="rank-chip rank-peppermint"><strong>Peppermint</strong><small>Fishing · 9.2%</small><span class="rank-rarity rarity-rare">Rare</span></div>
                 <div class="rank-chip rank-fall" data-seasonal-rank="fall"><strong>Fall</strong><small>Fishing · 5%</small><span class="rank-rarity rarity-rare">Rare</span></div>
@@ -583,6 +592,11 @@
               <div class="profile-avatar" id="profileAvatar" aria-hidden="true">?</div>
               <div><h2 id="profileUsername">Not signed in</h2><p id="profileCaption">Sign in to create your profile.</p></div>
             </div>
+            <section class="profile-score" aria-label="Blook Score">
+              <span>BLOOK SCORE</span>
+              <strong id="profileBlookScore">0</strong>
+              <p id="profileScoreCaption">Collectibles, rarity, fishing, Advent rewards, and Geometry Dash levels all count.</p>
+            </section>
             <div class="profile-upload-controls">
               <label class="account-button" id="profileAvatarUploadLabel" for="profileAvatarInput">Upload profile picture</label>
               <input id="profileAvatarInput" type="file" accept="image/jpeg,image/png,image/webp" />
@@ -655,7 +669,7 @@
             </section>
             <section class="trading-card" aria-labelledby="tradeHeading">
               <h2 id="tradeHeading">Offer a trade</h2>
-              <p>Choose items from each collection. Members can accept, decline, or cancel offers. Bots rarely accept, and only when your offer is more valuable.</p>
+              <p>Choose items from each collection. Members can accept, decline, or cancel offers.</p>
               <form class="trade-form" id="tradeForm">
                 <label for="tradeRecipient">Member username
                   <select id="tradeRecipient" name="recipient" required>
@@ -749,7 +763,7 @@
               <span class="feast-intro-icon" aria-hidden="true">🦃</span>
               <div>
                 <h2>Make a feast together</h2>
-                <p>The app appears November 23–27. The kitchen unlocks at 4:00 PM Eastern today, November 23. Complete 24 prep, seasoning, and cooking steps across eight classic dishes; progress saves to your account.</p>
+                <p>The app appears November 23–26 and closes on November 27. The kitchen unlocks at 4:00 PM Eastern on November 23. Complete 24 prep, seasoning, and cooking steps across eight classic dishes; progress saves to your account.</p>
               </div>
             </div>
             <div class="feast-countdown" id="thanksgivingFeastCountdown" hidden>
@@ -1358,6 +1372,8 @@
         </form>
       </section>
     </div>
+    <script type="module" src="./autoclicker.js"></script>
+    <script type="module" src="./legendary-celebration.js"></script>
     <script type="module" src="./app.js"></script>
   </body>
 </html>

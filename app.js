@@ -1,6 +1,6 @@
 if (typeof document === 'undefined') {
-const CACHE_NAME = 'dayglow-shell-v11';
-const APP_SHELL = ['./', './index.html', './app.css', import.meta.url, './christmas.html', './manifest.webmanifest', './icon.svg'];
+const CACHE_NAME = 'dayglow-shell-v13';
+const APP_SHELL = ['./', './index.html', './app.css', './legendary-celebration.css', './legendary-celebration.js', './autoclicker.html', './autoclicker.css', './autoclicker.js', import.meta.url, './christmas.html', './topps.html', './geometry.html', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -96,7 +96,7 @@ const MAX_PROFILE_AVATAR_BYTES = 256 * 1024;
 const MAX_PROFILE_IMAGE_INPUT_BYTES = 5 * 1024 * 1024;
 const MAX_HOME_BACKGROUND_BYTES = 1024 * 1024;
 const MAX_HOME_BACKGROUND_INPUT_BYTES = 5 * 1024 * 1024;
-const DEFAULT_HOME_APP_ORDER = ['calendar', 'chat', 'notifications', 'settings', 'browser-appearance', 'profile', 'trading', 'admin', 'report', 'seasonal', 'emojis', 'turkey-fishing', 'thanksgiving-feast', 'christmas', 'topps', 'advent-calendar', 'holiday-fishing', 'holiday-shop', 'text-color-fishing', 'christmas-tree', 'export', 'updates'];
+const DEFAULT_HOME_APP_ORDER = ['calendar', 'chat', 'notifications', 'settings', 'browser-appearance', 'profile', 'trading', 'admin', 'report', 'seasonal', 'emojis', 'turkey-fishing', 'thanksgiving-feast', 'christmas', 'topps', 'geometry-dash', 'auto-clicker', 'advent-calendar', 'holiday-fishing', 'holiday-shop', 'text-color-fishing', 'christmas-tree', 'export', 'updates'];
 const HOME_APP_LABELS = Object.freeze({
   calendar: 'Calendar',
   chat: 'Messages',
@@ -113,6 +113,8 @@ const HOME_APP_LABELS = Object.freeze({
   'thanksgiving-feast': 'Thanksgiving Feast',
   christmas: 'Christmas',
   topps: 'Topps',
+  'geometry-dash': 'Geometry Dash',
+  'auto-clicker': 'Auto Clicker',
   'advent-calendar': 'Advent Calendar',
   'holiday-fishing': 'Holiday fishing',
   'holiday-shop': 'Holiday shop',
@@ -142,6 +144,66 @@ const RANK_RARITIES = Object.freeze({
   "Santa's Favorite": 'Mythical',
   Harvest: 'Uncommon',
   Drumstick: 'Rare',
+});
+const LEGENDARY_RANK_SYMBOLS = Object.freeze({
+  Cameron: '🐊',
+  Holiday: '🌟',
+  Snowball: '❄️',
+  'Snow Pup': '🐶',
+  'Winter Guardian': '🛡️'
+});
+const BLOOK_RARITY_POINTS = Object.freeze({
+  Common: 1,
+  Uncommon: 2,
+  Rare: 4,
+  Epic: 8,
+  Legendary: 15,
+  Mythical: 25
+});
+const BLOOK_EMOJI_RARITIES = Object.freeze({
+  pumpkin: 'Common',
+  snowflake: 'Uncommon',
+  ice_cube: 'Rare',
+  christmas_tree: 'Epic',
+  reindeer: 'Legendary',
+  turkey: 'Epic',
+  present: 'Legendary',
+  snowman: 'Legendary'
+});
+const BLOOK_RING_RARITIES = Object.freeze({
+  white: 'Common',
+  red: 'Uncommon',
+  peppermint: 'Rare',
+  gold: 'Rare',
+  santa: 'Rare',
+  turkey: 'Epic',
+  present: 'Epic',
+  christmas: 'Legendary',
+  candy_cane: 'Epic',
+  cookie: 'Legendary',
+  snow: 'Legendary',
+  north_star: 'Legendary',
+  harvest_feast: 'Legendary'
+});
+const BLOOK_TEXT_COLOR_RARITIES = Object.freeze({
+  red_text_color: 'Common',
+  white_text_color: 'Common',
+  gold_text_color: 'Uncommon',
+  base_christmas_text_color: 'Epic',
+  reindeer_text_color: 'Legendary',
+  christmas_text_color: 'Mythical',
+  present_text_color: 'Mythical',
+  candy_cane_text_color: 'Epic',
+  winter_text_color: 'Legendary',
+  gummy_text_color: 'Epic',
+  northern_lights_text_color: 'Mythical',
+  thanksgiving_text_color: 'Legendary'
+});
+const BLOOK_HOLIDAY_ITEM_RARITIES = Object.freeze({
+  advent_background: 'Legendary',
+  limited_tree_strand: 'Epic',
+  sleigh_bells: 'Mythical',
+  snow_globe: 'Mythical'
 });
 const defaultSettings = {
   weeklySummaryEnabled: false,
@@ -511,6 +573,8 @@ const elements = {
   profileTextColorStatus: document.querySelector('#profileTextColorStatus'),
   profileFishCount: document.querySelector('#profileFishCount'),
   profileFishButton: document.querySelector('#profileFishButton'),
+  profileBlookScore: document.querySelector('#profileBlookScore'),
+  profileScoreCaption: document.querySelector('#profileScoreCaption'),
   onlineList: document.querySelector('#onlineList'),
   saveStatusText: document.querySelector('#saveStatusText'),
   privacyNoteText: document.querySelector('#privacyNoteText'),
@@ -638,9 +702,7 @@ function populateTradingRecipientSelect(select) {
   const options = (tradingData?.members ?? []).map((member) => {
     const option = document.createElement('option');
     option.value = member.username;
-    option.textContent = member.is_bot
-      ? `${member.username} (BOT · fair trades only)`
-      : member.username;
+    option.textContent = member.username;
     return option;
   });
   const placeholder = document.createElement('option');
@@ -721,7 +783,6 @@ async function loadTrading() {
       result.members.some((member) =>
         !member ||
         typeof member.username !== 'string' ||
-        typeof member.is_bot !== 'boolean' ||
         !member.collections ||
         !['rank', 'emoji', 'ring'].every((type) => Array.isArray(member.collections[type]))
       )
@@ -1517,7 +1578,7 @@ function thanksgivingAppActive() {
   }).formatToParts(new Date());
   const values = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
   const today = `${values.year}-${values.month}-${values.day}`;
-  return today >= '2026-11-23' && today <= '2026-11-27';
+  return today >= '2026-11-23' && today < '2026-11-27';
 }
 
 function updateSeasonalAppVisibility() {
@@ -1809,7 +1870,14 @@ async function syncOnlineUsers() {
     return;
   }
   try {
-    await apiRequest('/presence/ping', { method: 'POST', body: {} });
+    await apiRequest('/presence/ping', {
+      method: 'POST',
+      body: {
+        app: document.visibilityState === 'visible' && document.hasFocus()
+          ? (elements.settingsOverlay.hidden ? (activePage === 'home' ? 'home' : activePage) : 'settings')
+          : undefined
+      }
+    });
     const onlineUsers = await apiRequest('/presence');
     renderOnlineUserList(elements.onlineList, onlineUsers);
     renderOnlineUserList(elements.chatOnlineList, onlineUsers);
@@ -1903,7 +1971,7 @@ function renderAdminRewardControls() {
   const accountOptions = adminAccounts.map((account) => {
     const option = document.createElement('option');
     option.value = String(account.id);
-    option.textContent = `${account.username}${account.is_bot ? ' (BOT)' : ''}`;
+    option.textContent = account.username;
     return option;
   });
   const accountPlaceholder = new Option('Choose an account', '');
@@ -2267,7 +2335,14 @@ async function refreshAdminPanel() {
   if (!currentProfile?.is_admin || adminRefreshInProgress) return;
   adminRefreshInProgress = true;
   try {
-    await apiRequest('/presence/ping', { method: 'POST', body: {} });
+    await apiRequest('/presence/ping', {
+      method: 'POST',
+      body: {
+        app: document.visibilityState === 'visible' && document.hasFocus()
+          ? (elements.settingsOverlay.hidden ? (activePage === 'home' ? 'home' : activePage) : 'settings')
+          : undefined
+      }
+    });
     const [members, bans, reports, accounts] = await Promise.all([
       apiRequest('/admin/online'),
       apiRequest('/admin/bans'),
@@ -2323,7 +2398,6 @@ function renderAdminAccounts() {
       typeof account.rank !== 'string' ||
       !Number.isInteger(account.fish_caught) ||
       typeof account.online !== 'boolean' ||
-      typeof account.is_bot !== 'boolean' ||
       !Array.isArray(account.unlocked_ranks) ||
       !Array.isArray(account.unlocked_emojis) ||
       !Array.isArray(account.unlocked_rings) ||
@@ -2343,7 +2417,6 @@ function renderAdminAccounts() {
     const name = document.createElement('h3');
     name.textContent = `${account.equipped_emoji_symbol ? `${account.equipped_emoji_symbol} ` : ''}${account.username}`;
     appendAdminBadge(name, account.username);
-    if (account.is_bot) name.append(createBotBadge());
     const meta = document.createElement('p');
     meta.className = 'admin-account-meta';
     const status = account.ban_expires_at
@@ -2367,7 +2440,7 @@ function renderAdminAccounts() {
     quests.className = 'admin-account-details';
     quests.textContent = `Completed quests: ${account.completed_quests.join(', ') || 'None'}`;
     card.append(heading, stats, equipped, collections, quests);
-    if (!account.is_bot && account.username.toLocaleLowerCase() !== 'rufus') {
+    if (account.username.toLocaleLowerCase() !== 'rufus') {
       const actions = document.createElement('div');
       actions.className = 'admin-action-row';
       const deleteButton = document.createElement('button');
@@ -2383,7 +2456,7 @@ function renderAdminAccounts() {
 
 async function deleteAdminAccount(accountId, button) {
   const account = adminAccounts.find((item) => item.id === Number(accountId));
-  if (!account || account.is_bot || account.username.toLocaleLowerCase() === 'rufus') return;
+  if (!account || account.username.toLocaleLowerCase() === 'rufus') return;
   const confirmed = window.confirm(
     `Permanently delete ${account.username}? This removes the account, saved progress, sessions, and chat messages. This cannot be undone.`
   );
@@ -2517,14 +2590,10 @@ function renderAdminMembers(members) {
     elements.adminOnlineList.append(empty);
   }
   for (const member of members) {
-    if (typeof member.is_bot !== 'boolean') {
-      throw new Error('The server returned invalid online member data.');
-    }
     const option = new Option(
-      `${member.equipped_emoji_symbol ? `${member.equipped_emoji_symbol} ` : ''}${member.username}${member.username.toLowerCase() === 'rufus' ? ' [ADMIN]' : ''}${member.is_bot ? ' (BOT)' : ''}`,
+      `${member.equipped_emoji_symbol ? `${member.equipped_emoji_symbol} ` : ''}${member.username}${member.username.toLowerCase() === 'rufus' ? ' [ADMIN]' : ''}`,
       String(member.id)
     );
-    option.dataset.isBot = String(member.is_bot);
     elements.adminTargetSelect.add(option);
 
     const row = document.createElement('div');
@@ -2533,11 +2602,14 @@ function renderAdminMembers(members) {
     name.className = 'admin-user-name';
     name.textContent = `${member.equipped_emoji_symbol ? `${member.equipped_emoji_symbol} ` : ''}${member.username}`;
     appendAdminBadge(name, member.username);
-    if (member.is_bot) name.append(createBotBadge());
     const meta = document.createElement('span');
     meta.className = 'admin-user-meta';
     meta.textContent = `${member.rank} · ${member.fish_caught} fish`;
     name.append(meta);
+    const app = document.createElement('span');
+    app.className = 'admin-user-meta';
+    app.textContent = `Using ${member.app_name || 'Unknown app'}`;
+    name.append(app);
     const viewButton = document.createElement('button');
     viewButton.type = 'button';
     viewButton.dataset.adminProfile = String(member.id);
@@ -2587,7 +2659,6 @@ async function viewAdminProfile(userId) {
     if (
       !profile ||
       typeof profile.username !== 'string' ||
-      typeof profile.is_bot !== 'boolean' ||
       !Array.isArray(profile.unlocked_ranks) ||
       !Array.isArray(profile.unlocked_emojis)
     ) {
@@ -2598,7 +2669,6 @@ async function viewAdminProfile(userId) {
     elements.adminProfileName.textContent =
       `${profile.equipped_emoji_symbol ? `${profile.equipped_emoji_symbol} ` : ''}${profile.username}`;
     appendAdminBadge(elements.adminProfileName, profile.username);
-    if (profile.is_bot) elements.adminProfileName.append(createBotBadge());
     elements.adminProfileRank.textContent = `Current rank: ${profile.rank}`;
     elements.adminProfileStats.textContent = `Fish caught: ${profile.fish_caught}`;
     elements.adminProfileCollections.textContent =
@@ -2622,7 +2692,7 @@ async function sendAdminWarning() {
     elements.adminWarningInput.value = '';
     const targetIsBot = elements.adminTargetSelect.selectedOptions[0]?.dataset.isBot === 'true';
     elements.adminActionStatus.textContent = targetIsBot
-      ? 'Warning sent. The bot will acknowledge it in chat.'
+      ? 'Warning sent.'
       : 'Warning sent. It will appear as a pop-up for that member.';
   } catch (error) {
     elements.adminActionStatus.textContent = `Warning could not be sent: ${error.message}`;
@@ -2762,18 +2832,9 @@ function renderOnlineUserList(list, onlineUsers) {
     userTag.append(dot);
     if (avatar) userTag.append(avatar);
     userTag.append(username);
-    if (onlineUser.is_bot) userTag.append(createBotBadge());
     userTag.append(rank);
     list.append(userTag);
   });
-}
-
-function createBotBadge() {
-  const badge = document.createElement('span');
-  badge.className = 'bot-badge';
-  badge.textContent = 'BOT';
-  badge.title = 'Automated account';
-  return badge;
 }
 
 function appendAdminBadge(element, username) {
@@ -2790,6 +2851,7 @@ function setUsernameText(element, username, emoji = '', colorId = '') {
     red_text_color: ['red', ''],
     white_text_color: ['white', ''],
     gold_text_color: ['gold', ''],
+    base_christmas_text_color: ['base_christmas', ''],
     reindeer_text_color: ['reindeer', '🦌'],
     christmas_text_color: ['christmas', '🎄'],
     present_text_color: ['present', '🎁'],
@@ -2832,6 +2894,48 @@ function rankClass(rank) {
   return `rank-${rank.toLowerCase().replaceAll(/\s+/g, '-')}`;
 }
 
+function calculateBlookScore(profile) {
+  const scoreOwnedItems = (ids, rarities) =>
+    [...new Set(Array.isArray(ids) ? ids : [])]
+      .reduce((score, id) => score + (BLOOK_RARITY_POINTS[rarities[id]] ?? 0), 0);
+  const holiday = profile?.holiday ?? {};
+  const holidayItems = holiday.items && typeof holiday.items === 'object' ? holiday.items : {};
+  const holidayCurrencies = [
+    holiday.candy_canes,
+    holiday.gummy_bears,
+    holiday.gingerbread_men,
+    holidayItems.gingerbread_token
+  ].reduce((total, amount) => total + (Number.isSafeInteger(amount) && amount > 0 ? amount : 0), 0);
+  const extraHolidayItems = Object.entries(BLOOK_HOLIDAY_ITEM_RARITIES)
+    .reduce((score, [id, rarity]) => {
+      const quantity = holidayItems[id];
+      return score + (Number.isSafeInteger(quantity) && quantity > 0
+        ? quantity * BLOOK_RARITY_POINTS[rarity]
+        : 0);
+    }, 0);
+  const adventDays = Array.isArray(holiday.advent_claimed_days)
+    ? new Set(holiday.advent_claimed_days).size
+    : 0;
+  const unlockedApps = Array.isArray(holiday.apps_unlocked)
+    ? new Set(holiday.apps_unlocked).size
+    : 0;
+  const fishCaught = Number.isSafeInteger(profile?.fish_caught) && profile.fish_caught > 0
+    ? profile.fish_caught
+    : 0;
+  return scoreOwnedItems(profile?.unlocked_ranks, RANK_RARITIES) +
+    scoreOwnedItems(profile?.unlocked_emojis, BLOOK_EMOJI_RARITIES) +
+    scoreOwnedItems(profile?.unlocked_rings, BLOOK_RING_RARITIES) +
+    scoreOwnedItems(profile?.unlocked_text_colors, BLOOK_TEXT_COLOR_RARITIES) +
+    extraHolidayItems +
+    Math.floor(holidayCurrencies / 10) +
+    (Number.isSafeInteger(holiday.tree_lights) && holiday.tree_lights > 0 ? holiday.tree_lights : 0) +
+    (Number.isSafeInteger(holiday.tree_strands) && holiday.tree_strands > 0 ? holiday.tree_strands : 0) +
+    adventDays * 2 +
+    unlockedApps * 5 +
+    (holiday.shop_expanded ? 5 : 0) +
+    fishCaught;
+}
+
 function renderProfile() {
     const username = currentProfile?.username ?? null;
     const rank = currentProfile?.rank ?? null;
@@ -2854,6 +2958,9 @@ function renderProfile() {
     elements.profileRank.textContent = rank ?? '—';
     elements.profileRank.className = rank ? rankClass(rank) : '';
     elements.profileFishCount.textContent = String(currentProfile?.fish_caught ?? 0);
+    elements.profileBlookScore.textContent = calculateBlookScore(currentProfile).toLocaleString();
+    elements.profileScoreCaption.textContent =
+      'Common 1 · Uncommon 2 · Rare 4 · Epic 8 · Legendary 15 · Mythical 25. +1 per fish, plus Advent and holiday rewards.';
     const unlockedRanks = Array.isArray(currentProfile?.unlocked_ranks)
       ? currentProfile.unlocked_ranks
       : [];
@@ -2928,6 +3035,11 @@ function updateSeasonalPresentation(info) {
       badge.textContent = rarity;
     });
   }
+  document.querySelector('[data-seasonal-color]').hidden = !info.christmas_enabled;
+  document.querySelectorAll('[data-christmas-snow-odds]').forEach((odds) => {
+    const chance = info.christmas_enabled ? '60.6%' : '61.1%';
+    odds.textContent = odds.dataset.christmasSnowOdds === 'rank' ? `Fishing · ${chance}` : chance;
+  });
 
   for (const [questId, rank] of Object.entries(info.quest_rewards)) {
     const rewardName = document.querySelector(`#${questId}RewardName`);
@@ -3077,6 +3189,7 @@ const TEXT_COLOR_NAMES = Object.freeze({
   red_text_color: 'Red',
   white_text_color: 'White',
   gold_text_color: 'Gold',
+  base_christmas_text_color: 'Christmas (Base)',
   reindeer_text_color: 'Reindeer',
   christmas_text_color: 'Christmas',
   present_text_color: 'Present',
@@ -3128,7 +3241,7 @@ function seasonalRingAvailability(ringId) {
   const christmasActive = seasonalInfoState?.christmas_enabled
     ?? (() => {
       const today = new Date();
-      return today.getUTCMonth() === 11 || (today.getUTCMonth() === 10 && today.getUTCDate() >= 28);
+      return today.getUTCMonth() === 11 || (today.getUTCMonth() === 10 && today.getUTCDate() >= 27);
     })();
   return ringId !== (christmasActive ? 'turkey' : 'present');
 }
@@ -3187,6 +3300,16 @@ async function fishForProfileRing() {
     elements.turkeyFishingStatus.textContent = result.ring_unlocked
       ? `You caught the ${result.caught_ring.name} ring! You can equip it from Profile.`
       : `You caught another ${result.caught_ring.name} ring. It is already in your collection.`;
+    if (result.ring_unlocked && BLOOK_RING_RARITIES[result.caught_ring.id] === 'Legendary') {
+      const symbol = {
+        christmas: '🎄',
+        cookie: '🍪',
+        snow: '❄️',
+        north_star: '⭐',
+        harvest_feast: '🍂'
+      }[result.caught_ring.id] ?? '💍';
+      window.showLegendaryCelebration(result.caught_ring.name, symbol);
+    }
     void syncOnlineUsers();
     if (activePage === 'chat') void syncChatMessages(true);
   } catch (error) {
@@ -3425,6 +3548,9 @@ async function fishForEmoji() {
     elements.emojiFishingStatus.textContent = result.emoji_unlocked
       ? `You unlocked ${caughtEmoji.symbol} ${caughtEmoji.name} · ${caughtEmoji.rarity}!`
       : `You found ${caughtEmoji.symbol} ${caughtEmoji.name} · ${caughtEmoji.rarity} again.`;
+    if (result.emoji_unlocked && caughtEmoji.rarity === 'Legendary') {
+      window.showLegendaryCelebration(caughtEmoji.name, caughtEmoji.symbol);
+    }
   } catch (error) {
     elements.emojiFishingStatus.textContent = `Emoji fishing failed: ${error.message}`;
   } finally {
@@ -3555,7 +3681,6 @@ function appendChatMessage(message) {
   setUsernameText(username, message.username, message.equipped_emoji_symbol, message.equipped_text_color);
   appendAdminBadge(username, message.username);
   meta.append(username);
-  if (message.is_bot) meta.append(createBotBadge());
   const rank = document.createElement('span');
   rank.className = `chat-message-rank ${rankClass(message.rank)}`;
   rank.textContent = message.rank;
@@ -4830,10 +4955,21 @@ async function catchSeasonalFish() {
     const result = await apiRequest('/fish', { method: 'POST', body: {} });
     currentProfile = result.profile;
     currentUser = { ...currentUser, fish_caught: result.profile.fish_caught };
+    renderProfile();
     updateCalendarControls();
-    elements.catchStatus.textContent = result.rank_unlocked
-      ? `You unlocked ${result.caught_rank}! Choose it in your profile.`
-      : `You caught ${result.caught_rank} again. Choose your favorite unlocked rank in your profile.`;
+    elements.catchStatus.textContent = result.caught_text_color
+      ? result.text_color_unlocked
+        ? 'You unlocked the Christmas (Base) text color! Equip it from your profile.'
+        : 'You already have the Christmas (Base) text color.'
+      : result.rank_unlocked
+        ? `You unlocked ${result.caught_rank}! Choose it in your profile.`
+        : `You caught ${result.caught_rank} again. Choose your favorite unlocked rank in your profile.`;
+    if (result.rank_unlocked && RANK_RARITIES[result.caught_rank] === 'Legendary') {
+      window.showLegendaryCelebration(
+        result.caught_rank,
+        LEGENDARY_RANK_SYMBOLS[result.caught_rank] ?? '🏆'
+      );
+    }
     if (calendarMode === 'community') void syncOnlineUsers();
   } catch (error) {
     elements.catchStatus.textContent = `Fishing failed: ${error.message}`;
@@ -5290,9 +5426,9 @@ elements.tradeForm.addEventListener('submit', async (event) => {
       }
     });
     elements.tradeStatus.textContent = result.status === 'accepted'
-      ? 'Trade completed with the bot.'
+      ? 'Trade completed.'
       : result.status === 'declined'
-        ? 'The bot declined this trade.'
+        ? 'The trade was declined.'
         : 'Trade offer sent.';
     await loadTrading();
   } catch (error) {

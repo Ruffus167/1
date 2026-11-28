@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#c8102e">
   <title>Topps — Official Collectibles</title>
+  <link rel="stylesheet" href="./autoclicker.css">
   <style>
     :root { --red:#c8102e; --ink:#17191c; --muted:#6b6f75; --line:#e4e5e7; --cream:#f7f7f5; }
     * { box-sizing:border-box; }
@@ -197,7 +198,8 @@
       </div>
     </section>
   </main>
-  <script>
+  <script type="module" src="./autoclicker.js"></script>
+  <script type="module">
     const TOKEN_KEY = 'dayglow-server-session';
     const STORE_KEY = 'topps-app-data-v1';
     const seed = {
@@ -317,6 +319,12 @@
       const token=localStorage.getItem(TOKEN_KEY); if(!token){currentUser=null;return;}
       try{const res=await fetch('/api/auth/me',{headers:{Authorization:'Bearer '+token}});if(res.ok){const body=await res.json();currentUser=body.user;}else{currentUser=null;}}catch{currentUser=null;}
       updateAuth();
+      if(currentUser) void pingPresence();
+    }
+    async function pingPresence(){
+      const token=localStorage.getItem(TOKEN_KEY); if(!currentUser||!token)return;
+      const app=document.visibilityState==='visible'&&document.hasFocus()?'topps':undefined;
+      try{await fetch('/api/presence/ping',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({app})});}catch{}
     }
     function updateAuth(){
       const isAdmin=currentUser?.username==='rufus';
@@ -363,6 +371,7 @@
       renderShop();renderCalendar();renderHelp();renderHistory();renderOrders();renderAdmin();
     }
     readProfile().then(renderAll);
+    setInterval(pingPresence,5000);
     setInterval(()=>document.querySelectorAll('[data-countdown]').forEach(el=>{el.textContent=countdown(el.dataset.countdown);}),60000);
   </script>
 </body>

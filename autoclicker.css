@@ -1,0 +1,72 @@
+.hoilday-autoclicker {
+  position: fixed;
+  right: max(14px, env(safe-area-inset-right));
+  bottom: max(14px, env(safe-area-inset-bottom));
+  z-index: 2147483000;
+  color: #f7f5ff;
+  font: 13px/1.45 system-ui, sans-serif;
+}
+
+.hoilday-autoclicker button,
+.hoilday-autoclicker input { font: inherit; }
+.hoilday-autoclicker-launcher {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(145deg, #7364d8, #41338c);
+  box-shadow: 0 5px 22px rgba(0,0,0,.4);
+  cursor: pointer;
+  font-size: 21px;
+}
+.hoilday-autoclicker-launcher.is-running { background: linear-gradient(145deg, #e35b68, #8b2637); }
+.hoilday-autoclicker-panel {
+  position: absolute;
+  right: 0;
+  bottom: 60px;
+  width: min(320px, calc(100vw - 28px));
+  display: grid;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid rgba(217,205,255,.35);
+  border-radius: 14px;
+  background: rgba(25,22,43,.98);
+  box-shadow: 0 15px 48px rgba(0,0,0,.48);
+  backdrop-filter: blur(12px);
+}
+.hoilday-autoclicker-panel[hidden] { display: none; }
+.hoilday-autoclicker-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.hoilday-autoclicker-header strong { font-size: 14px; }
+.hoilday-autoclicker-close { width: 28px; height: 28px; border: 0; border-radius: 7px; color: #ded8f5; background: rgba(255,255,255,.08); cursor: pointer; font-size: 20px; }
+.hoilday-autoclicker-description { margin: 0; color: #c8c0df; font-size: 11px; }
+.hoilday-autoclicker-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.hoilday-autoclicker-form label { display: grid; gap: 5px; color: #d3ccef; font-size: 10px; }
+.hoilday-autoclicker-form label:last-child { grid-column: 1 / -1; }
+.hoilday-autoclicker-form input { width: 100%; min-width: 0; height: 34px; padding: 0 9px; border: 1px solid rgba(255,255,255,.18); border-radius: 7px; color: #fff; background: rgba(255,255,255,.07); }
+.hoilday-autoclicker-arm { min-height: 37px; border: 1px solid rgba(255,224,129,.65); border-radius: 8px; color: #261e35; background: linear-gradient(100deg, #ffe487, #ffca78); cursor: pointer; font-weight: 750; }
+.hoilday-autoclicker-arm:disabled { opacity: .6; cursor: default; }
+.hoilday-autoclicker-status { min-height: 30px; margin: 0; color: #e4dcff; font-size: 10px; overflow-wrap: anywhere; }
+.hoilday-autoclicker :focus-visible { outline: 2px solid #ffe487; outline-offset: 2px; }
+
+.autoclicker-page {
+  min-height: 100vh;
+  padding: clamp(20px, 5vw, 56px);
+  color: #f5f2ff;
+  background: radial-gradient(ellipse at 80% 10%, rgba(116,91,223,.22), transparent 35%), #141321;
+  font: 15px/1.6 system-ui, sans-serif;
+}
+.autoclicker-page a { color: #d2c4ff; }
+.autoclicker-card { width: min(720px, 100%); margin: 7vh auto; padding: clamp(22px, 5vw, 42px); border: 1px solid rgba(217,205,255,.2); border-radius: 20px; background: rgba(255,255,255,.045); box-shadow: 0 18px 55px rgba(0,0,0,.25); }
+.autoclicker-card h1 { margin: 0 0 10px; font-size: clamp(30px, 7vw, 48px); line-height: 1.1; }
+.autoclicker-card p { color: #ccc5df; }
+.autoclicker-card ol { padding-left: 22px; color: #e6e1f4; }
+.autoclicker-card li + li { margin-top: 7px; }
+.autoclicker-open-button { min-height: 42px; margin: 8px 0; padding: 0 17px; border: 1px solid #ffe487; border-radius: 9px; color: #261e35; background: linear-gradient(100deg, #ffe487, #ffca78); cursor: pointer; font: 750 13px system-ui, sans-serif; }
+.autoclicker-page-status { min-height: 22px; font-size: 12px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hoilday-autoclicker * { scroll-behavior: auto !important; }
+}

@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#142a25" />
   <title>Christmas · Holiday</title>
+  <link rel="stylesheet" href="/autoclicker.css" />
+  <link rel="stylesheet" href="./legendary-celebration.css" />
   <style>
     :root {
       color-scheme: dark;
@@ -57,6 +59,15 @@
     .muted { color: var(--muted); line-height: 1.55; }
     .currency-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
     .currency { padding: 8px 11px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.06); font-size: 12px; font-weight: 700; }
+    .advent-journey { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; margin: 18px 0 12px; padding: 16px; border: 1px solid rgba(255,211,127,.23); border-radius: 14px; background: linear-gradient(110deg, rgba(246,108,115,.1), rgba(100,217,155,.1)); }
+    .journey-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    .journey-heading h3 { margin: 0; font-size: 14px; }
+    .journey-heading span { color: var(--gold); font-size: 12px; font-weight: 750; }
+    .journey-track { height: 9px; overflow: hidden; border-radius: 999px; background: rgba(0,0,0,.32); }
+    .journey-fill { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #f66c73, #ffd37f, #64d99b); transition: width .35s ease; }
+    .journey-stats { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 9px; color: var(--muted); font-size: 11px; }
+    .journey-actions { display: flex; flex-wrap: wrap; gap: 7px; justify-content: flex-end; }
+    .journey-actions .button { white-space: nowrap; }
     .calendar-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 9px; margin-top: 20px; }
     .day-card { min-width: 0; min-height: 112px; display: grid; grid-template-rows: auto 1fr auto; justify-items: center; gap: 5px; padding: 10px 5px 8px; cursor: pointer; text-align: center; transition: transform .15s, border-color .15s; }
     .day-card:hover { transform: translateY(-2px); border-color: rgba(255,211,127,.48); }
@@ -124,6 +135,8 @@
       .day-card { min-height: 89px; padding: 7px 2px 6px; border-radius: 9px; }
       .day-state { font-size: 8px; }
       .day-detail { align-items: stretch; flex-direction: column; }
+      .advent-journey { grid-template-columns: 1fr; gap: 12px; padding: 12px; }
+      .journey-actions { justify-content: flex-start; }
     }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
   </style>
@@ -172,6 +185,19 @@
       <h2>Choose a day</h2>
       <p class="muted">Select a door to see its gift. Gray claim boxes are not ready yet; rewards can only be claimed on the matching day.</p>
       <div class="currency-row" id="currencyRow"></div>
+      <section class="advent-journey" aria-label="Advent progress">
+        <div>
+          <div class="journey-heading"><h3>Your Advent journey</h3><span id="journeyPercent">0% claimed</span></div>
+          <div class="journey-track" id="journeyTrack" role="progressbar" aria-label="Advent gifts claimed" aria-valuemin="0" aria-valuemax="25" aria-valuenow="0">
+            <div class="journey-fill" id="journeyFill"></div>
+          </div>
+          <div class="journey-stats"><span id="journeyClaimed">0 of 25 gifts claimed</span><span id="journeyOpen">0 doors opened</span><span id="journeyRemaining">25 doors ahead</span></div>
+        </div>
+        <div class="journey-actions">
+          <button class="button" id="todayDoorButton" type="button">Today's door</button>
+          <button class="button" id="nextDoorButton" type="button">Next unopened</button>
+        </div>
+      </section>
       <div class="calendar-grid" id="calendarGrid" aria-label="Advent Calendar days"></div>
       <div class="day-detail" id="dayDetail" aria-live="polite">
         <div><h3 id="detailTitle">Loading the calendar…</h3><p id="detailDescription"></p></div>
@@ -236,10 +262,13 @@
       <div class="tour-grid" id="tourGrid"></div>
     </section>
   </main>
-  <script>
+  <script type="module" src="/autoclicker.js"></script>
+  <script type="module" src="./legendary-celebration.js"></script>
+  <script type="module">
     const TOKEN_KEY = 'dayglow-server-session';
     const COLOR_NAMES = {
       red_text_color: 'Red', white_text_color: 'White', gold_text_color: 'Gold',
+      base_christmas_text_color: 'Christmas (Base)',
       reindeer_text_color: 'Reindeer', christmas_text_color: 'Christmas',
       present_text_color: 'Present', candy_cane_text_color: 'Candy Cane',
       winter_text_color: 'Winter', gummy_text_color: 'Gummy',
@@ -248,6 +277,7 @@
     };
     const COLOR_CLASSES = {
       red_text_color: 'red', white_text_color: 'white', gold_text_color: 'gold',
+      base_christmas_text_color: 'base_christmas',
       reindeer_text_color: 'reindeer', christmas_text_color: 'christmas',
       present_text_color: 'present', candy_cane_text_color: 'candy_cane',
       winter_text_color: 'winter', gummy_text_color: 'gummy',
@@ -336,6 +366,23 @@
       return result;
     }
 
+    async function pingPresence() {
+      if (!state.user) return;
+      const apps = {
+        advent: 'advent-calendar',
+        fishing: 'holiday-fishing',
+        shop: 'holiday-shop',
+        colors: 'text-color-fishing',
+        tree: 'christmas-tree'
+      };
+      try {
+        const app = document.visibilityState === 'visible' && document.hasFocus()
+          ? apps[state.app]
+          : undefined;
+        await request('/presence/ping', { method: 'POST', body: { app } });
+      } catch {}
+    }
+
     function setUser(user) {
       state.user = user || null;
       if (user?.holiday) state.profile = user.holiday;
@@ -393,6 +440,18 @@
       if (!calendar) return;
       state.profile = calendar.profile || state.profile;
       currencyChips($('#currencyRow'), state.profile);
+      const claimedCount = calendar.days.filter((day) => day.claimed).length;
+      const todayTimestamp = Date.parse(`${calendar.today}T00:00:00Z`);
+      const openedCount = calendar.days.filter((day) =>
+        Date.parse(`${calendar.year}-12-${String(day.day).padStart(2, '0')}T00:00:00Z`) <= todayTimestamp
+      ).length;
+      const progressPercent = Math.round((claimedCount / calendar.days.length) * 100);
+      $('#journeyPercent').textContent = `${progressPercent}% claimed`;
+      $('#journeyClaimed').textContent = `${claimedCount} of ${calendar.days.length} gifts claimed`;
+      $('#journeyOpen').textContent = `${openedCount} ${openedCount === 1 ? 'door' : 'doors'} opened`;
+      $('#journeyRemaining').textContent = `${calendar.days.length - openedCount} doors ahead`;
+      $('#journeyTrack').setAttribute('aria-valuenow', String(claimedCount));
+      $('#journeyFill').style.width = `${progressPercent}%`;
       const grid = $('#calendarGrid');
       grid.replaceChildren();
       for (const day of calendar.days) {
@@ -429,6 +488,19 @@
         day.claimable ? 'Claim today’s gift' : state.user ? `Opens December ${day.day}` : 'Sign in to claim';
       if (day.claimable) claimButton.dataset.claimDay = String(day.day);
       else delete claimButton.dataset.claimDay;
+    }
+
+    function selectCalendarDay(day) {
+      if (!day) return;
+      state.selectedDay = day.day;
+      renderCalendar();
+      document.querySelector(`[data-panel="calendar"]`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function nextUnopenedDay() {
+      const calendar = state.calendar;
+      if (!calendar) return null;
+      return calendar.days.find((day) => day.claimable) || calendar.days.find((day) => !day.claimed) || calendar.days.at(-1);
     }
 
     function renderShop() {
@@ -576,6 +648,10 @@
         if (decoration) span.dataset.decoration = decoration;
         if (colorId === 'reindeer_text_color') span.style.color = index % 2 ? '#f3bd46' : '#f35c5c';
         if (colorId === 'christmas_text_color') span.style.color = index % 2 ? '#47d878' : '#f4535e';
+        if (colorId === 'base_christmas_text_color') {
+          span.style.color = index % 2 ? '#57df87' : '#ff626b';
+          span.style.webkitTextFillColor = span.style.color;
+        }
         if (colorId === 'present_text_color') span.style.color = index % 2 ? '#f3bd46' : '#f4535e';
         if (colorId === 'gummy_text_color') span.style.color = index % 2 ? '#ff82bc' : '#a9ec5c';
         if (colorId === 'thanksgiving_text_color') span.style.color = ['#d7783f', '#8d9f45', '#b64d3b'][index % 3];
@@ -777,6 +853,18 @@
         state.profile = result.profile.holiday;
         state.user = { ...state.user, ...result.profile };
         resultElement.textContent = format(result);
+        const legendaryHolidayCatch = path === '/holiday/fish'
+          ? {
+            snow_ring: ['Snow ring', '❄️'],
+            snow_pup_rank: ['Snow Pup', '🐶'],
+            snowman_emoji: ['Snowman', '☃️']
+          }[result.caught]
+          : path === '/holiday/text-color-fish' && result.caught === 'reindeer_text_color'
+            ? ['Reindeer text color', '🦌']
+            : null;
+        if (result.newly_unlocked && legendaryHolidayCatch) {
+          window.showLegendaryCelebration(...legendaryHolidayCatch);
+        }
         renderShop();
         renderColors();
         renderCalendar();
@@ -832,6 +920,12 @@
       }
       void claimReward();
     });
+    $('#todayDoorButton').addEventListener('click', () => {
+      const calendar = state.calendar;
+      const today = calendar?.days.find((day) => day.is_today);
+      selectCalendarDay(today || nextUnopenedDay());
+    });
+    $('#nextDoorButton').addEventListener('click', () => selectCalendarDay(nextUnopenedDay()));
     $('#fishButton').addEventListener('click', () => fish('/holiday/fish', $('#fishResult'), $('#fishButton'), (result) =>
       result.caught === 'no_reward'
         ? 'The line came back empty—no bonus this time.'
@@ -893,6 +987,8 @@
         }
       } else setUser(null);
       await refresh();
+      void pingPresence();
+      window.setInterval(() => { void pingPresence(); }, 5000);
       window.setInterval(() => {
         if (state.app === 'advent') updateSeasonCountdown();
       }, 1000);

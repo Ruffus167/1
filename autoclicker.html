@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#141321">
+  <title>Auto Clicker · Hoilday</title>
+  <link rel="stylesheet" href="./autoclicker.css">
+</head>
+<body class="autoclicker-page">
+  <a href="./index.html">← Back to Hoilday</a>
+  <main class="autoclicker-card">
+    <h1>Auto Clicker</h1>
+    <p>Set a click interval and count, then use the floating control from any Hoilday page.</p>
+    <button class="autoclicker-open-button" id="openAutoClickerControls" type="button">Open Auto Clicker controls</button>
+    <p class="autoclicker-page-status" id="autoClickerPageStatus" role="status" aria-live="polite"></p>
+    <ol>
+      <li>Adjust the interval, click count, and start/stop hotkey in the floating controls.</li>
+      <li>Move the pointer over a target in Hoilday and press Space (or your chosen key), or use Start in the floating panel.</li>
+      <li>Press the hotkey again or choose Stop to stop. Runs are limited to 100,000 clicks and stop when you leave the page.</li>
+    </ol>
+    <p>The clicker only runs on Hoilday pages. It simulates clicks on the element currently under your pointer; it does not click other sites or apps.</p>
+  </main>
+  <script type="module" src="./autoclicker.js"></script>
+  <script type="module">
+    document.querySelector('#openAutoClickerControls').addEventListener('click', () => {
+      window.HoildayAutoClicker.open();
+    });
+    document.addEventListener('hoilday-autoclicker-status', (event) => {
+      document.querySelector('#autoClickerPageStatus').textContent = event.detail;
+    });
+  </script>
+</body>
+</html>

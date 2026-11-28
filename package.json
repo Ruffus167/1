@@ -16,10 +16,35 @@
   },
   "hoilday": {
     "update": {
-      "version": "2026.11.24.1",
-      "title": "Topps app and swipeable home screens",
-      "description": "Added a new Topps app with a red-and-white storefront, release countdowns, shop purchases, deliveries, collecting history, help content, and a Rufus-only admin manager. The Hoilday app grid now uses swipeable pages with page indicators instead of creating extra rows, and the admin can delete shop items and release-calendar entries.",
+      "version": "2026.11.27.5",
+      "title": "Auto Clicker supports 100,000 clicks",
+      "description": "Hoilday's floating Auto Clicker now supports runs of up to 100,000 clicks, with Chromebook-friendly Space or letter/number hotkeys.",
       "history": [
+        {
+          "version": "2026.11.27.4",
+          "title": "Hoilday Auto Clicker",
+          "description": "Added a floating Auto Clicker available across Hoilday pages. Set the interval, click count, and start/stop hotkey; it clicks the Hoilday element under your pointer."
+        },
+        {
+          "version": "2026.11.27.3",
+          "title": "Legendary catch celebrations",
+          "description": "Newly unlocked Legendary collectibles now trigger a full-screen celebration with a falling collectible, glowing effects, and sparkles."
+        },
+        {
+          "version": "2026.11.27.2",
+          "title": "Christmas text color in regular fishing",
+          "description": "Regular fishing now has a 0.5% chance to unlock the undecorated Christmas (Base) text color during the Christmas season, with alternating red and green letters."
+        },
+        {
+          "version": "2026.11.27.1",
+          "title": "Christmas season starts November 27",
+          "description": "The seasonal fishing update now begins November 27 (UTC), replacing Fall and Turkey with Gingerbread and Reindeer, and switching quests and ring fishing to their Christmas rewards."
+        },
+        {
+          "version": "2026.11.24.2",
+          "title": "Geometry Dash app",
+          "description": "Added Geometry Dash Lite to the Hoilday home screen as a full-screen app. The game runs in an isolated frame and loads its Unity assets from an external CDN."
+        },
         {
           "version": "2026.11.24.1",
           "title": "Topps app and swipeable home screens",
@@ -29,11 +54,6 @@
           "version": "2026.11.23.1",
           "title": "Thanksgiving Feast cooking app",
           "description": "A new Thanksgiving cooking app counts down to its 4:00 PM Eastern unlock on November 23, then stays open through November 27. Complete 24 ordered prep, seasoning, and cooking steps across eight dishes to earn a turkey-decorated text color, Harvest Feast ring, Turkey and Pumpkin emojis, Candy Canes, Gummy Bears, Gingerbread people, and fish."
-        },
-        {
-          "version": "2026.11.18.1",
-          "title": "Fairer bot trades and complete collections",
-          "description": "Gifting and trading now load fish-unlocked emojis for every member. Bots only rarely accept trades when the offer is more valuable."
         },
         {
           "version": "2026.11.17.3",
@@ -56,39 +76,14 @@
           "description": "Admins can turn on global Christmas Weather with a red-and-green theme and falling Christmas trees. The Christmas countdown now has even more glowing red and green lights."
         },
         {
-          "version": "2026.11.16.7",
-          "title": "Christmas countdown and busier bots",
-          "description": "Bots fish more often across ranks, emojis, and rings, and only accept some trades. The new Christmas app counts down to Christmas Day and the December 1, 2026 Advent Calendar update."
-        },
-        {
           "version": "2026.11.16.6",
           "title": "Trade with members and restore backups",
-          "description": "Choose recipients from member dropdowns and trade only for collectibles they own, including persistent bot collections; bot trades complete immediately. Restore a backup to the matching signed-in account without changing its password."
+          "description": "Choose recipients from member dropdowns and trade only for collectibles they own, including complete collections; trades complete immediately. Restore a backup to the matching signed-in account without changing its password."
         },
         {
           "version": "2026.11.16.5",
           "title": "Gifts and fair trades",
           "description": "Send ranks, emojis, and rings to other members or exchange collectibles through trade offers. Transfers are verified by the server, trade exchanges happen together, and each account keeps at least one rank."
-        },
-        {
-          "version": "2026.11.16.4",
-          "title": "Bots that follow the conversation",
-          "description": "Bots can now answer recent chat with context-aware local replies and distinct personalities, with no AI key or external service needed."
-        },
-        {
-          "version": "2026.11.16.3",
-          "title": "Bots that follow the conversation",
-          "description": "Added optional hosted language-model replies for bots, using recent chat context and distinct personalities."
-        },
-        {
-          "version": "2026.11.16.2",
-          "title": "More lively bot companions",
-          "description": "Bots now have a larger mix of random chat lines, join active chats, and keep their rarest unlocked rank, emoji, and profile ring equipped."
-        },
-        {
-          "version": "2026.11.16.1",
-          "title": "Meet the Hoilday bots",
-          "description": "Fishy, Slothy, Bobby, and Spotty can show up while Rufus is online, join active chats, and collect and equip new fishing ranks, profile rings, and emojis. Each bot has its own 50% chance to be online, and bots are labeled in chat and member lists."
         },
         {
           "version": "2026.11.15.2",
